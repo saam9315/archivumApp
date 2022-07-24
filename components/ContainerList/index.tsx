@@ -1,11 +1,12 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
 import ContainerCard from '../ContainerCard'
 import containers from '../../data/containers'
 
 const ContainerList = () => {
+    const colorScheme = useColorScheme();
     return (
-        <View style={{ width: '100%' }}>
+        <View style={colorScheme === 'dark' ? styles.listContainerDark : styles.listContainerLight}>
             <FlatList
                 data={containers}
                 renderItem={({ item }) => <ContainerCard container={item} />}
@@ -17,4 +18,13 @@ const ContainerList = () => {
 
 export default ContainerList
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    listContainerLight: {
+        width: '100%',
+        backgroundColor: 'white',
+    },
+    listContainerDark: {
+        width: '100%',
+        backgroundColor: '#161f28',
+    },
+})

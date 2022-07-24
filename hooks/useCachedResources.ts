@@ -1,7 +1,7 @@
-import { FontAwesome } from '@expo/vector-icons';
-import * as Font from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import { FontAwesome } from "@expo/vector-icons";
+import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useState } from "react";
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -11,6 +11,10 @@ export default function useCachedResources() {
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHideAsync();
+        await Font.loadAsync({
+          "Muli-Bold": require("../assets/fonts/Muli-Bold.ttf"),
+          "Muli-Regular": require("../assets/fonts/Muli-Regular.ttf"),
+        });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);

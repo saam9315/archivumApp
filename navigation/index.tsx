@@ -3,12 +3,12 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome, Ionicons, Feather, EvilIcons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { View, ColorSchemeName, Pressable, StyleSheet } from 'react-native';
+import { View, ColorSchemeName, Pressable, StyleSheet, Image } from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
@@ -18,6 +18,9 @@ import SearchScreen from '../screens/SearchScreen';
 import GroupsScreen from '../screens/Groups';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import { setBackgroundColorAsync } from 'expo-system-ui';
+import LoginScreen from '../screens/LoginScreen';
+
 
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -40,6 +43,7 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -63,19 +67,21 @@ function BottomTabNavigator() {
       initialRouteName="HomeScreen"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarStyle: colorScheme === 'dark' ? { backgroundColor: '#1d2a38' } : { backgroundColor: '#eaecf5' },
       }}>
       <BottomTab.Screen
         name="HomeScreen"
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<'HomeScreen'>) => ({
           title: 'Home',
-          headerLeft: ({ }) => (<View style={styles.iconContainer}>
-            <Feather name="home" size={22} color={iconColor} />
-            <Feather name="home" size={22} color={iconColor} />
-            <Feather name="home" size={22} color={iconColor} />
-          </View>
+          headerStyle: colorScheme === 'dark' ? { backgroundColor: '#1d2a38' } : { backgroundColor: '#eaecf5' },
+          headerTitle: () => (
+            < Image
+              source={require('../assets/images/fav-icon_with-bg.png')}
+              fadeDuration={0}
+              style={styles.headerIcon}
+            />
           ),
-
           tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
           headerRight: () => (
             <Pressable
@@ -105,6 +111,10 @@ function BottomTabNavigator() {
         name="GroupsScreen"
         component={GroupsScreen}
         options={{
+          headerTintColor: Colors.light.tint,
+          headerStyle: {
+            //backgroundColor: 'grey'
+          },
           title: 'Groups',
           tabBarIcon: ({ color }) => <Ionicons name="people" size={24} color={color} />,
         }}
@@ -120,6 +130,11 @@ function BottomTabNavigator() {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  headerIcon: {
+    width: 30,
+    height: 30,
+    top: -10
   },
   icon: {
     paddingLeft: 10

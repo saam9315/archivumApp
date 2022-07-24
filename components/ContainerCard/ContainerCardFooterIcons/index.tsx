@@ -2,12 +2,18 @@ import { StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
 import { FontAwesome, Ionicons, Feather, AntDesign } from '@expo/vector-icons';
 import Colors from '../../../constants/Colors';
+import { useNavigation } from '@react-navigation/native';
 
 
 const ContainerCardFooterIcons = () => {
 
+    const navigation = useNavigation();
+
+    const onPress = () => {
+        navigation.navigate('Login');
+    }
     const colorScheme = useColorScheme();
-    const backgroundColor = colorScheme === 'dark' ? 'black' : 'white';
+    const backgroundColor = colorScheme === 'dark' ? '#161f28' : 'white';
     const textColor = colorScheme === 'dark' ? 'white' : 'black';
     const iconColor = colorScheme === 'dark' ? 'white' : 'black';
 
@@ -26,7 +32,7 @@ const ContainerCardFooterIcons = () => {
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Ionicons.Button style={{ marginRight: -12 }} backgroundColor={backgroundColor} name="people-outline" size={20} color={iconColor} />
+                <Ionicons.Button onPress={onPress} style={{ marginRight: -12 }} backgroundColor={backgroundColor} name="people-outline" size={20} color={iconColor} />
                 <Text style={{ color: textColor }}>2</Text>
             </View>
 
@@ -53,17 +59,4 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         margin: 1,
     },
-    lightIcon: {
-
-    },
-    darkIcon: {
-
-    },
-    lightText: {
-
-    },
-    darkText: {
-
-    }
-
 })
