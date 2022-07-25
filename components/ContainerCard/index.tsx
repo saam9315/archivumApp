@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Muli-Bold',
         fontWeight: "bold",
-        color: '#2e7ef2',
+        color: '#15e8dd',
         marginBottom: 10,
         paddingTop: 5,
         paddingLeft: 16,

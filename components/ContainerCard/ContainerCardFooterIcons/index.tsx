@@ -10,7 +10,6 @@ const ContainerCardFooterIcons = () => {
     const navigation = useNavigation();
 
     const onPress = () => {
-        navigation.navigate('Login');
     }
     const colorScheme = useColorScheme();
     const backgroundColor = colorScheme === 'dark' ? '#161f28' : 'white';
