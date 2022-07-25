@@ -2,27 +2,36 @@ import { StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
 import { ContainerProps } from '../../types'
 import ContainerCardFooterIcons from './ContainerCardFooterIcons'
-import Colors from '../../constants/Colors'
 
+const theme = () => {
+    return useColorScheme();
+}
+var scheme:any='';
 
 const ContainerCard = ({ container }: ContainerProps) => {
-    const colorScheme = useColorScheme();
+    scheme = theme();
+    const containerCardBgC = scheme === 'dark' ? "#1d2a38" : "#eaecf5";
+    const containerNameTextColor = scheme === 'dark'? "#15e8dd" : "#2e7ef2"
+    const containerDescriptionTextColor = scheme === 'dark'? "lightgrey": "#748590"
 
     return (
-        <View style={colorScheme === 'dark'
-            ? styles.containerCardDark
-            : styles.containerCardLight}
+        <View style={[
+            styles.containerCard, 
+            {borderEndColor: containerCardBgC, 
+            borderTopColor: containerCardBgC,
+            borderStartColor: containerCardBgC
+            }
+            ]}  
         >
             <Text
-                style={colorScheme === 'dark'
-                    ? styles.containerCardNameTextDark
-                    : styles.containerCardNameTextLight}
+                style={[styles.containerNameText,
+                    {color: containerNameTextColor
+                    }
+                ]}
             >
                 {container.displayName}
             </Text>
-            <Text style={colorScheme === 'dark'
-                ? styles.containerCardNameDescriptionDark
-                : styles.containerCardNameDescriptionLight}
+            <Text style={[styles.containerCardDescriptionText, {color: containerDescriptionTextColor}]}
             >
                 {container.description}
             </Text>
@@ -35,58 +44,26 @@ const ContainerCard = ({ container }: ContainerProps) => {
 export default ContainerCard
 
 const styles = StyleSheet.create({
-    containerCardLight: {
+    containerCard: {
         width: "100%",
         padding: 6,
-        borderEndColor: '#eaecf5',
-        borderTopColor: '#eaecf5',
-        borderStartColor: '#eaecf5',
         borderWidth: 10,
         borderBottomWidth: 0.5,
         borderBottomColor: "grey",
     },
-    containerCardDark: {
-        width: "100%",
-        paddingTop: 6,
-        borderEndColor: '#1d2a38',
-        borderTopColor: '#1d2a38',
-        borderStartColor: '#1d2a38',
-        borderWidth: 10,
-        borderBottomWidth: 0.5,
-        borderBottomColor: "grey",
-    },
-    containerCardNameTextLight: {
+    containerNameText: {
         fontSize: 18,
         fontFamily: 'Muli-Bold',
         fontWeight: "bold",
-        color: '#2e7ef2',
         marginBottom: 10,
         paddingTop: 5,
         paddingLeft: 10,
         paddingRight: 10,
     },
-    containerCardNameTextDark: {
-        fontSize: 18,
-        fontFamily: 'Muli-Bold',
-        fontWeight: "bold",
-        color: '#15e8dd',
-        marginBottom: 10,
-        paddingTop: 5,
-        paddingLeft: 16,
-        paddingRight: 16,
-    },
-    containerCardNameDescriptionLight: {
+    containerCardDescriptionText: {
         fontSize: 14,
         fontFamily: 'Muli-Regular',
-        color: '#748590',
         paddingLeft: 10,
         paddingRight: 10,
-    },
-    containerCardNameDescriptionDark: {
-        fontSize: 14,
-        fontFamily: 'Muli-Regular',
-        color: 'lightgrey',
-        paddingLeft: 18,
-        paddingRight: 18,
     },
 });

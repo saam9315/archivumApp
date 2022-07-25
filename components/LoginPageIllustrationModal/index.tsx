@@ -2,22 +2,26 @@ import { StyleSheet, Text, View, Image, useColorScheme, Pressable } from 'react-
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 
+const theme = () => {
+    return useColorScheme();
+}
+var scheme:any='';
 
 const LoginPageIllustrationModal = () => {
-    const colorScheme = useColorScheme();
+    scheme = theme();
+    const headerTextColor = scheme === 'dark' ? "white" : "black";
+    const illustrationContainerBgC = scheme === 'dark' ? "#161f28" : "white";
+    const loginButtonContainerBgC = scheme === 'dark' ? "#161f28" : "white";
+
     const navigation = useNavigation();
 
     const handleLogin = () => {
         navigation.navigate('Root');
     }
     return (
-        <View style={colorScheme === 'dark'
-            ? styles.ilustrationContainerDark
-            : styles.ilustrationContainerLight}
+        <View style={[styles.ilustrationContainer, {backgroundColor: illustrationContainerBgC}]}
         >
-            <Text style={colorScheme === 'dark'
-                ? styles.headerTextDark
-                : styles.headerTextLight}
+            <Text style={[styles.headerText, {color: headerTextColor }]}
             >
                 Cool down your Hot data with Archivum</Text>
             <Image
@@ -25,9 +29,7 @@ const LoginPageIllustrationModal = () => {
                 fadeDuration={0}
                 style={styles.ilustration}
             />
-            <View style={colorScheme === 'dark'
-                ? styles.loginButtonContainerDark
-                : styles.loginButtonContainerLight}
+            <View style={[styles.loginButtonContainer, {backgroundColor: loginButtonContainerBgC}]}
             >
                 <Pressable style={styles.loginButton} onPress={() => { handleLogin() }}>
                     <Text style={styles.loginButtonText}>Login with Azure</Text>
@@ -41,7 +43,7 @@ const LoginPageIllustrationModal = () => {
 export default LoginPageIllustrationModal
 
 const styles = StyleSheet.create({
-    headerTextLight: {
+    headerText: {
         fontSize: 35,
         marginLeft: 20,
         marginRight: 20,
@@ -49,54 +51,25 @@ const styles = StyleSheet.create({
         top: -40,
         textAlign: 'center',
         fontFamily: 'Muli-Bold',
-        color: 'black'
     },
-    headerTextDark: {
-        fontSize: 35,
-        marginLeft: 20,
-        marginRight: 20,
-        fontWeight: '500',
-        top: -40,
-        textAlign: 'center',
-        fontFamily: 'Muli-Bold',
-        color: 'white'
-    },
-    ilustrationContainerLight: {
+    ilustrationContainer: {
         width: '80%',
         height: '60%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
-    },
-    ilustrationContainerDark: {
-        width: '80%',
-        height: '60%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#161f28',
     },
     ilustration: {
         width: 300,
         height: 250,
         borderRadius: 50,
         resizeMode: 'contain',
-
     },
-    loginButtonContainerLight: {
+    loginButtonContainer: {
         width: '100%',
         height: '10%',
         justifyContent: 'center',
         alignItems: 'center',
         bottom: -40,
-        backgroundColor: 'white',
-    },
-    loginButtonContainerDark: {
-        width: '100%',
-        height: '10%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        bottom: -40,
-        backgroundColor: '#161f28',
     },
     loginButton: {
         width: '50%',

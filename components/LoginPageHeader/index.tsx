@@ -1,19 +1,22 @@
-import { StyleSheet, View, Image, useColorScheme } from 'react-native'
+import { StyleSheet, View, Image, useColorScheme, Platform } from 'react-native'
 import React from 'react'
 
+const theme = () => {
+    return useColorScheme();
+}
+var scheme:any='';
+
 const LoginPageHeader = () => {
-    const colorScheme = useColorScheme();
+    scheme = theme();
+    const iconBackground = scheme === 'dark' ? "#161f28" : "#eaecf5";
+
     return (
-        <View style={colorScheme === 'dark'
-            ? styles.headerIconContainerDark
-            : styles.headerIconContainerLight}
+        <View style= {[styles.headerIconContainer, {backgroundColor: iconBackground }]}
         >
             <Image
                 source={require('../../assets/images/fav-icon_with-bg.png')}
                 fadeDuration={0}
-                style={colorScheme === 'dark'
-                    ? styles.headerIconDark
-                    : styles.headerIconLight}
+                style={[styles.headerIcon, {backgroundColor: iconBackground }]}
             />
         </View>
     )
@@ -22,30 +25,15 @@ const LoginPageHeader = () => {
 export default LoginPageHeader
 
 const styles = StyleSheet.create({
-    headerIconContainerLight: {
+    headerIconContainer: {
         top: -90,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#eaecf5',
     },
-    headerIconContainerDark: {
-        top: -90,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#161f28',
-    },
-    headerIconLight: {
+    headerIcon: {
         width: '60%',
         height: 30,
-        resizeMode: 'contain',
-        backgroundColor: '#eaecf5'
-    },
-    headerIconDark: {
-        width: '60%',
-        height: 30,
-        resizeMode: 'contain',
-        backgroundColor: '#161f28'
+        resizeMode: 'contain', 
     },
 })

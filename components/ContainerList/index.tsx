@@ -3,10 +3,17 @@ import React from 'react'
 import ContainerCard from '../ContainerCard'
 import containers from '../../data/containers'
 
+const theme = () => {
+    return useColorScheme();
+}
+var scheme:any='';
+
 const ContainerList = () => {
-    const colorScheme = useColorScheme();
+    scheme = theme();
+    const listContainerBgC = scheme === 'dark' ? "#161f28" : "white";
+    
     return (
-        <View style={colorScheme === 'dark' ? styles.listContainerDark : styles.listContainerLight}>
+        <View style={[styles.listContainer, {backgroundColor: listContainerBgC}]}>
             <FlatList
                 data={containers}
                 renderItem={({ item }) => <ContainerCard container={item} />}
@@ -19,12 +26,8 @@ const ContainerList = () => {
 export default ContainerList
 
 const styles = StyleSheet.create({
-    listContainerLight: {
+    listContainer: {
         width: '100%',
         backgroundColor: 'white',
-    },
-    listContainerDark: {
-        width: '100%',
-        backgroundColor: '#161f28',
     },
 })
