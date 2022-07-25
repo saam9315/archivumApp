@@ -1,19 +1,15 @@
-import { FlatList, StyleSheet, Text, useColorScheme, View } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
 import ContainerCard from '../ContainerCard'
 import containers from '../../data/containers'
 
-const theme = () => {
-    return useColorScheme();
-}
-var scheme:any='';
 
 const ContainerList = () => {
-    scheme = theme();
-    const listContainerBgC = scheme === 'dark' ? "#161f28" : "white";
-    
+    const themeMode = useColorScheme();
+    const listContainerBgC = themeMode === 'dark' ? "#161f28" : "white";
+
     return (
-        <View style={[styles.listContainer, {backgroundColor: listContainerBgC}]}>
+        <View style={[styles.listContainer, { backgroundColor: listContainerBgC }]}>
             <FlatList
                 data={containers}
                 renderItem={({ item }) => <ContainerCard container={item} />}

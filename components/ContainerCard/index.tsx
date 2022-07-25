@@ -3,35 +3,33 @@ import React from 'react'
 import { ContainerProps } from '../../types'
 import ContainerCardFooterIcons from './ContainerCardFooterIcons'
 
-const theme = () => {
-    return useColorScheme();
-}
-var scheme:any='';
 
 const ContainerCard = ({ container }: ContainerProps) => {
-    scheme = theme();
-    const containerCardBgC = scheme === 'dark' ? "#1d2a38" : "#eaecf5";
-    const containerNameTextColor = scheme === 'dark'? "#15e8dd" : "#2e7ef2"
-    const containerDescriptionTextColor = scheme === 'dark'? "lightgrey": "#748590"
+    const themeMode = useColorScheme();
+    const containerCardBgC = themeMode === 'dark' ? "#1d2a38" : "#eaecf5";
+    const containerNameTextColor = themeMode === 'dark' ? "#15e8dd" : "#2e7ef2"
+    const containerDescriptionTextColor = themeMode === 'dark' ? "lightgrey" : "#748590"
 
     return (
         <View style={[
-            styles.containerCard, 
-            {borderEndColor: containerCardBgC, 
-            borderTopColor: containerCardBgC,
-            borderStartColor: containerCardBgC
+            styles.containerCard,
+            {
+                borderEndColor: containerCardBgC,
+                borderTopColor: containerCardBgC,
+                borderStartColor: containerCardBgC
             }
-            ]}  
+        ]}
         >
             <Text
                 style={[styles.containerNameText,
-                    {color: containerNameTextColor
-                    }
+                {
+                    color: containerNameTextColor
+                }
                 ]}
             >
                 {container.displayName}
             </Text>
-            <Text style={[styles.containerCardDescriptionText, {color: containerDescriptionTextColor}]}
+            <Text style={[styles.containerCardDescriptionText, { color: containerDescriptionTextColor }]}
             >
                 {container.description}
             </Text>

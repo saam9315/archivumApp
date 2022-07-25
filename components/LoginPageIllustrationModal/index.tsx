@@ -2,16 +2,12 @@ import { StyleSheet, Text, View, Image, useColorScheme, Pressable } from 'react-
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 
-const theme = () => {
-    return useColorScheme();
-}
-var scheme:any='';
-
 const LoginPageIllustrationModal = () => {
-    scheme = theme();
-    const headerTextColor = scheme === 'dark' ? "white" : "black";
-    const illustrationContainerBgC = scheme === 'dark' ? "#161f28" : "white";
-    const loginButtonContainerBgC = scheme === 'dark' ? "#161f28" : "white";
+    const themeMode = useColorScheme();
+
+    const headerTextColor = themeMode === 'dark' ? "white" : "black";
+    const illustrationContainerBgC = themeMode === 'dark' ? "#161f28" : "white";
+    const loginButtonContainerBgC = themeMode === 'dark' ? "#161f28" : "white";
 
     const navigation = useNavigation();
 
@@ -19,9 +15,9 @@ const LoginPageIllustrationModal = () => {
         navigation.navigate('Root');
     }
     return (
-        <View style={[styles.ilustrationContainer, {backgroundColor: illustrationContainerBgC}]}
+        <View style={[styles.ilustrationContainer, { backgroundColor: illustrationContainerBgC }]}
         >
-            <Text style={[styles.headerText, {color: headerTextColor }]}
+            <Text style={[styles.headerText, { color: headerTextColor }]}
             >
                 Cool down your Hot data with Archivum</Text>
             <Image
@@ -29,7 +25,7 @@ const LoginPageIllustrationModal = () => {
                 fadeDuration={0}
                 style={styles.ilustration}
             />
-            <View style={[styles.loginButtonContainer, {backgroundColor: loginButtonContainerBgC}]}
+            <View style={[styles.loginButtonContainer, { backgroundColor: loginButtonContainerBgC }]}
             >
                 <Pressable style={styles.loginButton} onPress={() => { handleLogin() }}>
                     <Text style={styles.loginButtonText}>Login with Azure</Text>
