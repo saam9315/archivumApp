@@ -6,26 +6,24 @@ import LoginPageHeader from '../components/LoginPageHeader';
 import { useAuth } from '../contexts/Auth';
 
 export default function LoginScreen() {
-  let discovery = useAutoDiscovery(
-    "https://login.microsoftonline.com/f2658745-f87e-4fb9-8ff6-6b616a8cec41/v2.0"
-  );
 
   const [loading, isLoading] = useState(false);
+
   const auth = useAuth();
+
   const login = async () => {
     isLoading(true);
-    await auth.signIn(discovery);
+    await auth.signIn();
   };
 
   const themeMode = useColorScheme();
   const headerTextColor = themeMode === 'dark' ? "white" : "black";
   const illustrationContainerBgC = themeMode === 'dark' ? "#161f28" : "white";
   const loginButtonContainerBgC = themeMode === 'dark' ? "#161f28" : "white";
+  const mainContainerBgC = themeMode === 'dark' ? "#161f28" : "#eaecf5";
+
   return (
-    <SafeAreaView style={themeMode === 'dark'
-      ? styles.mainContainerDark
-      : styles.mainContainerLight}
-    >
+    <SafeAreaView style={[styles.mainContainer, { backgroundColor: mainContainerBgC }]}>
       <LoginPageHeader />
 
       <View style={[styles.ilustrationContainer, { backgroundColor: illustrationContainerBgC }]}
@@ -51,21 +49,13 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  mainContainerLight: {
+  mainContainer: {
     flex: 1,
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eaecf5',
-  },
-  mainContainerDark: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#161f28',
+    backgroundColor: '',
   },
   headerText: {
     fontSize: 35,

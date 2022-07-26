@@ -1,4 +1,4 @@
-import { Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { useColorScheme, Image, Pressable, StyleSheet } from "react-native";
@@ -47,9 +47,9 @@ export default function BottomTabNavigator() {
                             style={({ pressed }) => ({
                                 opacity: pressed ? 0.5 : 1,
                             })}>
-                            <FontAwesome
-                                name="info-circle"
-                                size={25}
+                            <Ionicons
+                                name="information-circle-outline"
+                                size={24}
                                 color={colorScheme === 'dark' ? 'white' : 'black'}
                                 style={{ marginLeft: 15 }}
                             />
@@ -61,7 +61,7 @@ export default function BottomTabNavigator() {
                             style={({ pressed }) => ({
                                 opacity: pressed ? 0.5 : 1,
                             })}>
-                            <MaterialCommunityIcons style={{ marginRight: 15 }} name="logout" size={24} color="white" />
+                            <MaterialCommunityIcons style={{ marginRight: 15 }} name="logout" size={24} color={colorScheme === 'dark' ? 'white' : 'black'} />
                         </Pressable>
                     ),
                 })}
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     headerIcon: {
         width: 30,
         height: 30,
-        top: -10
+        top: -2
     },
     icon: {
         paddingLeft: 10

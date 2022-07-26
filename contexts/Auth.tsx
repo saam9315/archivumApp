@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 //import { AuthData, authService } from '../services/authService';
-import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig } from 'expo-auth-session';
+import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig, RevokeTokenRequestConfig } from 'expo-auth-session';
 import { Alert } from 'react-native';
 
 export type AuthData = {
@@ -70,7 +70,7 @@ const AuthProvider: React.FC = ({ children }) => {
       //Try get the data from Async Storage
       const authDataSerialized = await AsyncStorage.getItem('tokenObject');
 
-      console.log("====================================authDataSerialized====================================", authDataSerialized);
+      console.log("\n============================================= Token stored locally =============================================\n", authDataSerialized);
 
 
       if (authDataSerialized !== null) {
@@ -85,7 +85,7 @@ const AuthProvider: React.FC = ({ children }) => {
             const refreshConfig: RefreshTokenRequestConfig = { clientId: clientId, refreshToken: storedToken.refreshToken }
             const newToken = await AuthSession.refreshAsync(refreshConfig, { tokenEndpoint: discovery?.tokenEndpoint });
 
-            console.log("==================================== Refreshed Token ====================================", newToken);
+            console.log("\n============================================= Refreshed Token =============================================\n", newToken);
 
 
             const newAuthData: AuthData = JSON.parse(JSON.stringify(newToken));
@@ -128,7 +128,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
     if (response?.type === "success") {
       const code = response.params.code;
-      console.log("============================================== Code ============================================\n", code);
+      console.log("============================================= Code =============================================\n", code);
       if (code) {
         try {
           const accessTokenConfig = new AuthSession.AccessTokenRequest({
@@ -143,7 +143,7 @@ const AuthProvider: React.FC = ({ children }) => {
           );
 
           console.log(
-            "============================================= Token Exchanged ===========================================\n",
+            "============================================= Token Exchanged =============================================\n",
             responseToken
           );
           const authData: TokenResponseConfig = responseToken?.getRequestConfig();
@@ -170,22 +170,29 @@ const AuthProvider: React.FC = ({ children }) => {
     //and send the user to the AuthStack
     try {
       const authDataSerialized = await AsyncStorage.getItem('tokenObject');
-      if (authDataSerialized) {
+
+      if (authDataSerialized !== null) {
+        const storedToken: TokenResponseConfig = JSON.parse(authDataSerialized);
+
+        let revokeRequestConfig: RevokeTokenRequestConfig = { token: storedToken.accessToken };
+
         //If there are data, it's converted to an Object and the state is updated.
 
-        //const revokeResponse = await AuthSession.revokeAsync(JSON.parse(authDataSerialized), { revocationEndpoint: discovery?.authorizationEndpoint });
+        const revokeResponse = await AuthSession.revokeAsync(revokeRequestConfig, { revocationEndpoint: discovery?.authorizationEndpoint });
 
-        //if (revokeResponse) {
+
+        console.log("============================================= Revoke =============================================\n", revokeResponse);
+
         //Remove the data from Async Storage
         //to NOT be recoverede in next session.
         await AsyncStorage.removeItem('tokenObject');
         setAuthData(undefined);
 
         const isTokenDeleted = await AsyncStorage.getItem('tokenObject');
-        console.log("============================================== Token Revoked ========================================================\n", isTokenDeleted);
+        console.log("============================================= Token Revoked =======================================\n Token stored locally = ", isTokenDeleted);
         //}
-      }
 
+      }
 
     } catch (error) {
       console.log('ERROR', error)
