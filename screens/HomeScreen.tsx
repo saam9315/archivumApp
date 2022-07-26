@@ -8,6 +8,8 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScree
   const themeMode = useColorScheme();
   const containerBgC = themeMode === 'dark' ? "#1d2a38" : "#eaecf5";
 
+
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: containerBgC }]}>
       <ContainerList />
@@ -20,3 +22,4 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
