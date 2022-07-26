@@ -4,7 +4,8 @@ import jwtDecode from 'jwt-decode';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 //import { AuthData, authService } from '../services/authService';
-import { TokenResponseConfig, useAutoDiscovery, TokenType } from 'expo-auth-session';
+import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig } from 'expo-auth-session';
+import { Alert } from 'react-native';
 
 export type AuthData = {
   accessToken: string;
@@ -72,24 +73,25 @@ const AuthProvider: React.FC = ({ children }) => {
       console.log("====================================authDataSerialized====================================", authDataSerialized);
 
 
-      if (authDataSerialized) {
+      if (authDataSerialized !== null) {
 
-        /* ==============================================================================================  Refresh token logic ============================================================================================================================
-        
 
-        let storedToken = new TokenResponse(JSON.parse(authDataSerialized));
+
+
+        let storedToken = JSON.parse(authDataSerialized);
         if (storedToken.shouldRefresh()) {
 
           try {
-            const clientId = "69f454ab-2519-4656-841c-c8cce1183656";
             const refreshConfig: RefreshTokenRequestConfig = { clientId: clientId, refreshToken: storedToken.refreshToken }
             const newToken = await AuthSession.refreshAsync(refreshConfig, { tokenEndpoint: discovery?.tokenEndpoint });
 
-            const newAuthData: AuthData = JSON.parse(authDataSerialized);
+            console.log("==================================== Refreshed Token ====================================", newToken);
+
+
+            const newAuthData: AuthData = JSON.parse(JSON.stringify(newToken));
             setAuthData(newAuthData);
 
-
-            AsyncStorage.setItem('tokenObject', JSON.stringify(newAuthData));
+            AsyncStorage.setItem('tokenObject', JSON.stringify(newToken));
             //Persist the data in the Async Storage
             //to be recovered in the next user session.
 
@@ -97,17 +99,18 @@ const AuthProvider: React.FC = ({ children }) => {
 
           catch (err: any) {
             Alert.alert("Error", err);
+          } finally {
+            setLoading(false);
           }
         }
-        
-        
-        
-        ===================================================================================================  Refresh token logic ============================================================================================================================*/
+
+
+
+
 
         //If there are data, it's converted to an Object and the state is updated.
         const _authData: AuthData = JSON.parse(authDataSerialized);
         setAuthData(_authData);
-        setLoading(false);
       }
     } catch (error) {
     } finally {
@@ -121,11 +124,11 @@ const AuthProvider: React.FC = ({ children }) => {
     //In a real App this data will be provided by the user from some InputText components.
     //
     //const _authData = await authService.signIn();
-    promptAsync()
+    const response = await promptAsync()
 
-    if (result?.type === "success") {
-      const code = result.params.code;
-      console.log("===================================================== Code ============================================================\n", code);
+    if (response?.type === "success") {
+      const code = response.params.code;
+      console.log("============================================== Code ============================================\n", code);
       if (code) {
         try {
           const accessTokenConfig = new AuthSession.AccessTokenRequest({
@@ -140,7 +143,7 @@ const AuthProvider: React.FC = ({ children }) => {
           );
 
           console.log(
-            "================================================== Token Exchanged ===========================================\n",
+            "============================================= Token Exchanged ===========================================\n",
             responseToken
           );
           const authData: TokenResponseConfig = responseToken?.getRequestConfig();
