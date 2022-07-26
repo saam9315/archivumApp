@@ -2,6 +2,7 @@ import React from 'react';
 import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { RootTabScreenProps } from '../types';
 import ContainerList from '../components/ContainerList';
+import SearchBar from '../components/SearchBar';
 
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScreen'>) {
@@ -12,6 +13,7 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScree
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: containerBgC }]}>
+      {/* <SearchBar /> */}
       <ContainerList />
     </SafeAreaView>
   )

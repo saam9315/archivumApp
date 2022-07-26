@@ -17,6 +17,7 @@ export default function App() {
       <AuthProvider>
         <SafeAreaProvider>
           <Router />
+          <StatusBar />
         </SafeAreaProvider>
       </AuthProvider>
     );
