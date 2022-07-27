@@ -13,8 +13,8 @@ const ContainerCardFooterIcons = () => {
     }
     const colorScheme = useColorScheme();
     const backgroundColor = colorScheme === 'dark' ? '#161f28' : 'white';
-    const textColor = colorScheme === 'dark' ? 'white' : 'black';
-    const iconColor = colorScheme === 'dark' ? 'white' : 'black';
+    const textColor = colorScheme === 'dark' ? 'lightgrey' : 'black';
+    const iconColor = colorScheme === 'dark' ? 'lightgrey' : 'black';
 
     return (
         <View style={styles.container}>
