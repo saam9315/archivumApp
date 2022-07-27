@@ -16,6 +16,7 @@ declare global {
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Login: undefined;
+  Home: undefined;
   Modal: undefined;
   NotFound: undefined;
 };
@@ -29,13 +30,23 @@ export type RootTabParamList = {
   HomeScreen: undefined;
   SearchScreen: undefined;
   GroupsScreen: undefined;
-  LoginScreen: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<
   BottomTabScreenProps<RootTabParamList, Screen>,
   NativeStackScreenProps<RootStackParamList>
 >;
+
+type State = {
+  isLoading: boolean;
+  isSignout: boolean;
+  userToken: undefined | string;
+};
+
+type Action =
+  | { type: 'RESTORE_TOKEN'; token: undefined | string }
+  | { type: 'SIGN_IN'; token: string }
+  | { type: 'SIGN_OUT' };
 
 
 export interface User {

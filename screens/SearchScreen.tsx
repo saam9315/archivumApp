@@ -1,8 +1,13 @@
-import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 
+
+
 export default function SearchScreen() {
+
+
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Search</Text>
@@ -26,4 +31,5 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
+
 });
