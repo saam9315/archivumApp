@@ -101,17 +101,15 @@ const AuthProvider: React.FC = ({ children }) => {
         setAuthData(parsedToken);
         setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
+      console.log(error);
+      signIn();
     }
   }
 
   async function signIn() {
     //call the service passing credential (email and password).
     //In a real App this data will be provided by the user from some InputText components.
-    //
-    //const _authData = await authService.signIn();
     const response = await promptAsync()
 
     if (response?.type === "success") {
