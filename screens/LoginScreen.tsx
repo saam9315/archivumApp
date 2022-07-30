@@ -1,6 +1,8 @@
 import { useAutoDiscovery } from 'expo-auth-session';
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, useColorScheme, Image, Pressable, Text, View } from 'react-native';
+import Illustration from '../components/Illusatration';
+import SvgComponent from '../components/Illusatration';
 import LoginPageFooterIcon from '../components/LoginPageFooterIcon';
 import LoginPageHeader from '../components/LoginPageHeader';
 import { useAuth } from '../contexts/Auth';
@@ -31,11 +33,13 @@ export default function LoginScreen() {
         <Text style={[styles.headerText, { color: headerTextColor }]}
         >
           Cool down your Hot data with Archivum</Text>
-        <Image
-          source={require('../assets/images/illustration-archivum.png')}
+        {/* <Image
+          source={require('../assets/images/archivum-illustration.svg')}
           fadeDuration={0}
           style={styles.ilustration}
-        />
+        /> */}
+
+        <Illustration></Illustration>
         <View style={[styles.loginButtonContainer, { backgroundColor: loginButtonContainerBgC }]}
         >
           <Pressable style={styles.loginButton} onPress={() => { login() }}>

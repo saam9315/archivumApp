@@ -19,28 +19,29 @@ const ContainerCardFooterIcons = () => {
     return (
         <View style={styles.container}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <FontAwesome.Button
-                    style={{ marginRight: -12 }}
+                <AntDesign
+                    name="file1"
+                    style={{ marginRight: 2 }}
                     selectionColor={Colors.light.tint}
                     backgroundColor={backgroundColor}
                     onPress={() => { console.warn('Hello there') }}
-                    name="files-o" size={18}
+                    size={14}
                     color={iconColor}
                 />
                 <Text style={{ color: textColor }}>12</Text>
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Ionicons.Button onPress={onPress} style={{ marginRight: -12 }} backgroundColor={backgroundColor} name="people-outline" size={20} color={iconColor} />
+                <Ionicons.Button onPress={onPress} style={{ marginRight: -13 }} backgroundColor={backgroundColor} name="people-outline" size={16} color={iconColor} />
                 <Text style={{ color: textColor }}>2</Text>
             </View>
 
             <View>
-                <AntDesign.Button style={{ marginRight: -12 }} backgroundColor={backgroundColor} name="edit" size={20} color={iconColor} />
+                <AntDesign.Button style={{ marginRight: -12 }} backgroundColor={backgroundColor} name="edit" size={16} color={iconColor} />
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
-                <AntDesign.Button style={{ marginRight: -12 }} backgroundColor={backgroundColor} selectionColor={Colors.dark.tint} name="addfile" size={24} color={iconColor} />
+                <AntDesign.Button style={{ marginRight: -12 }} backgroundColor={backgroundColor} selectionColor={Colors.dark.tint} name="addfile" size={16} color={iconColor} />
             </View>
         </View>
     )

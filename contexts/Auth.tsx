@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 //import { AuthData, authService } from '../services/authService';
-import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig, RevokeTokenRequestConfig } from 'expo-auth-session';
+import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig, RevokeTokenRequestConfig, TokenRequestConfig, TokenResponse } from 'expo-auth-session';
 import { Alert } from 'react-native';
 
 export type AuthData = {
@@ -75,46 +75,34 @@ const AuthProvider: React.FC = ({ children }) => {
 
       if (authDataSerialized !== null) {
 
+        const parsedToken: AuthSession.TokenResponse = JSON.parse(authDataSerialized);
+        const tokenResConf = new TokenResponse(parsedToken);
 
-
-
-        let storedToken = JSON.parse(authDataSerialized);
-        if (storedToken.shouldRefresh()) {
-
+        if (tokenResConf.shouldRefresh()) {
           try {
-            const refreshConfig: RefreshTokenRequestConfig = { clientId: clientId, refreshToken: storedToken.refreshToken }
+            const refreshConfig: RefreshTokenRequestConfig = { clientId: clientId, refreshToken: tokenResConf.refreshToken }
             const newToken = await AuthSession.refreshAsync(refreshConfig, { tokenEndpoint: discovery?.tokenEndpoint });
 
             console.log("\n============================================= Refreshed Token =============================================\n", newToken);
 
-
-            const newAuthData: AuthData = JSON.parse(JSON.stringify(newToken));
-            setAuthData(newAuthData);
-
+            setAuthData(newToken);
             AsyncStorage.setItem('tokenObject', JSON.stringify(newToken));
+            setLoading(false);
             //Persist the data in the Async Storage
-            //to be recovered in the next user session.
-
+            //to be recovered in the next user session
           }
 
           catch (err: any) {
             Alert.alert("Error", err);
-          } finally {
             setLoading(false);
           }
         }
-
-
-
-
-
         //If there are data, it's converted to an Object and the state is updated.
-        const _authData: AuthData = JSON.parse(authDataSerialized);
-        setAuthData(_authData);
+        setAuthData(parsedToken);
+        setLoading(false);
       }
+      setLoading(false);
     } catch (error) {
-    } finally {
-      //loading finished
       setLoading(false);
     }
   }
