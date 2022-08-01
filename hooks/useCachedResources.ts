@@ -1,9 +1,7 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -31,7 +29,6 @@ export default function useCachedResources() {
         });
         const imageAssets = cacheImages([
           require("../assets/images/fav-icon_with-bg.png"),
-          require("../assets/images/archivum-illustration.svg"),
           require("../assets/images/mobilabLogoDark.png"),
           require("../assets/images/mobilabLogoLight.png"),
           require("../assets/images/mobilabLogoLight.png"),

@@ -6,6 +6,8 @@ import * as AuthSession from 'expo-auth-session';
 //import { AuthData, authService } from '../services/authService';
 import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig, RevokeTokenRequestConfig, TokenRequestConfig, TokenResponse } from 'expo-auth-session';
 import { Alert } from 'react-native';
+import { isLoadingAtom, userTokenAtom } from '../stores/Atoms';
+import { useSetRecoilState } from 'recoil';
 
 export type AuthData = {
   accessToken: string;
@@ -19,8 +21,6 @@ export type AuthData = {
 };
 
 type AuthContextData = {
-  authData?: AuthData;
-  loading: boolean;
   signIn(): Promise<void>;
   signOut(): void;
 };
@@ -46,17 +46,20 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
 
-  let discovery = useAutoDiscovery(
+  const setUserToken = useSetRecoilState<AuthData | undefined>(userTokenAtom);
+
+  const discovery = useAutoDiscovery(
     "https://login.microsoftonline.com/f2658745-f87e-4fb9-8ff6-6b616a8cec41/v2.0"
   );
 
+
   const [request, result, promptAsync] = AuthSession.useAuthRequest(config, discovery);
 
-  const [authData, setAuthData] = useState<AuthData>();
+
 
   //the AuthContext start with loading equals true
   //and stay like this, until the data be load from Async Storage
-  const [loading, setLoading] = useState(true);
+  const setIsLoading = useSetRecoilState(isLoadingAtom);
 
   useEffect(() => {
     //Every time the App is opened, this provider is rendered
@@ -65,7 +68,7 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
 
-  async function loadStorageData(): Promise<void> {
+  async function loadStorageData() {
     try {
       //Try get the data from Async Storage
       const authDataSerialized = await AsyncStorage.getItem('tokenObject');
@@ -75,35 +78,58 @@ const AuthProvider: React.FC = ({ children }) => {
 
       if (authDataSerialized !== null) {
 
-        const parsedToken: AuthSession.TokenResponse = JSON.parse(authDataSerialized);
+        const parsedToken = JSON.parse(authDataSerialized);
         const tokenResConf = new TokenResponse(parsedToken);
+
+        console.log("\n============================================= Local Token should be refreshed =============================================\n", tokenResConf.shouldRefresh());
 
         if (tokenResConf.shouldRefresh()) {
           try {
+
             const refreshConfig: RefreshTokenRequestConfig = { clientId: clientId, refreshToken: tokenResConf.refreshToken }
-            const newToken = await AuthSession.refreshAsync(refreshConfig, { tokenEndpoint: discovery?.tokenEndpoint });
+            let newToken: AuthSession.TokenResponse;
+            if (discovery) {
+              newToken = await AuthSession.refreshAsync(refreshConfig, discovery);
 
-            console.log("\n============================================= Refreshed Token =============================================\n", newToken);
+              console.log("\n============================================= Refreshed Token =============================================\n", newToken);
 
-            setAuthData(newToken);
-            AsyncStorage.setItem('tokenObject', JSON.stringify(newToken));
-            setLoading(false);
+              setUserToken(newToken);
+              AsyncStorage.setItem('tokenObject', JSON.stringify(newToken));
+              setIsLoading(false);
+            }
+            else {
+              console.log("\n============================================= Discovery is null =============================================\n", discovery);
+              setUserToken(undefined);
+              setIsLoading(false);
+            }
             //Persist the data in the Async Storage
             //to be recovered in the next user session
           }
 
           catch (err: any) {
-            Alert.alert("Error", err);
-            setLoading(false);
+            console.log(err)
+            setUserToken(undefined);
+            setIsLoading(false);
+
           }
         }
+        else {
+          setUserToken(tokenResConf);
+          setIsLoading(false);
+        }
         //If there are data, it's converted to an Object and the state is updated.
-        setAuthData(parsedToken);
-        setLoading(false);
+
       }
+      else {
+        console.log("\n============================================= No Token stored locally =============================================\n");
+        setUserToken(undefined);
+        setIsLoading(false);
+      }
+
     } catch (error) {
       console.log(error);
-      signIn();
+      setUserToken(undefined)
+      setIsLoading(false);
     }
   }
 
@@ -114,7 +140,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
     if (response?.type === "success") {
       const code = response.params.code;
-      console.log("============================================= Code =============================================\n", code);
+      //console.log("============================================= Code =============================================\n", code);
       if (code) {
         try {
           const accessTokenConfig = new AuthSession.AccessTokenRequest({
@@ -129,25 +155,39 @@ const AuthProvider: React.FC = ({ children }) => {
           );
 
           console.log(
-            "============================================= Token Exchanged =============================================\n",
+            //"============================================= Token Exchanged =============================================\n",
             responseToken
           );
           const authData: TokenResponseConfig = responseToken?.getRequestConfig();
+
+
+          console.log(
+            "============================================= AuthData =============================================\n",
+            authData
+          );
           if (authData) {
             //Set the data in the context, so the App can be notified
             //and send the user to the AuthStack
-            setAuthData(responseToken);
+            setUserToken(authData);
             //Persist the data in the Async Storage
             //to be recovered in the next user session.
             AsyncStorage.setItem('tokenObject', JSON.stringify(authData));
-            setLoading(false);
+            setIsLoading(false);
+            return;
 
           }
-        } catch (err) {
-          console.log(err);
+        } catch (err: any) {
+          Alert.alert(err);
+          setIsLoading(false);
         }
       }
+      Alert.alert("Authentication error!");
+      setUserToken(undefined)
+      setIsLoading(false);
     }
+    Alert.alert("Authentication error!");
+    setUserToken(undefined)
+    setIsLoading(false);
 
   };
 
@@ -162,8 +202,6 @@ const AuthProvider: React.FC = ({ children }) => {
 
         let revokeRequestConfig: RevokeTokenRequestConfig = { token: storedToken.accessToken };
 
-        //If there are data, it's converted to an Object and the state is updated.
-
         const revokeResponse = await AuthSession.revokeAsync(revokeRequestConfig, { revocationEndpoint: discovery?.authorizationEndpoint });
 
 
@@ -172,8 +210,7 @@ const AuthProvider: React.FC = ({ children }) => {
         //Remove the data from Async Storage
         //to NOT be recoverede in next session.
         await AsyncStorage.removeItem('tokenObject');
-        setAuthData(undefined);
-
+        setUserToken(undefined);
         const isTokenDeleted = await AsyncStorage.getItem('tokenObject');
         console.log("============================================= Token Revoked =======================================\n Token stored locally = ", isTokenDeleted);
         //}
@@ -182,6 +219,8 @@ const AuthProvider: React.FC = ({ children }) => {
 
     } catch (error) {
       console.log('ERROR', error)
+      setUserToken(undefined);
+      setIsLoading(false);
     }
 
   };
@@ -189,7 +228,7 @@ const AuthProvider: React.FC = ({ children }) => {
   return (
     //This component will be used to encapsulate the whole App,
     //so all components will have access to the Context
-    <AuthContext.Provider value={{ authData, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
@@ -208,3 +247,5 @@ function useAuth(): AuthContextData {
 }
 
 export { AuthContext, AuthProvider, useAuth };
+
+

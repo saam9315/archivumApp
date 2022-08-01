@@ -1,4 +1,4 @@
-import { StyleSheet, Text, useColorScheme, View } from 'react-native'
+import { Alert, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
 import { ContainerProps } from '../../types'
 import ContainerCardFooterIcons from './ContainerCardFooterIcons'
@@ -11,14 +11,16 @@ const ContainerCard = ({ container }: ContainerProps) => {
     const containerDescriptionTextColor = themeMode === 'dark' ? "lightgrey" : "#748590"
 
     return (
-        <View style={[
-            styles.containerCard,
-            {
-                borderEndColor: containerCardBgC,
-                borderTopColor: containerCardBgC,
-                borderStartColor: containerCardBgC
-            }
-        ]}
+        <Pressable
+            onPress={() => { Alert.alert('Container Card Pressed!') }}
+            style={[
+                styles.containerCard,
+                {
+                    borderEndColor: containerCardBgC,
+                    borderTopColor: containerCardBgC,
+                    borderStartColor: containerCardBgC
+                }
+            ]}
         >
             <Text
                 style={[styles.containerNameText,
@@ -35,7 +37,7 @@ const ContainerCard = ({ container }: ContainerProps) => {
             </Text>
             <ContainerCardFooterIcons />
 
-        </View>
+        </Pressable>
     )
 }
 

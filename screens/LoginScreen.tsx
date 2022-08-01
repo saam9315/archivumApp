@@ -1,20 +1,20 @@
-import { useAutoDiscovery } from 'expo-auth-session';
-import React, { useState } from 'react';
+
+import React from 'react';
 import { StyleSheet, SafeAreaView, useColorScheme, Image, Pressable, Text, View } from 'react-native';
-import Illustration from '../components/Illusatration';
-import SvgComponent from '../components/Illusatration';
+import { useSetRecoilState } from 'recoil';
+import LoginIllustration from '../components/LoginIllusatration';
 import LoginPageFooterIcon from '../components/LoginPageFooterIcon';
 import LoginPageHeader from '../components/LoginPageHeader';
 import { useAuth } from '../contexts/Auth';
+import { isLoadingAtom } from '../stores/Atoms';
 
 export default function LoginScreen() {
 
-  const [loading, isLoading] = useState(false);
-
+  const setIsLoading = useSetRecoilState(isLoadingAtom)
   const auth = useAuth();
 
   const login = async () => {
-    isLoading(true);
+    setIsLoading(true);
     await auth.signIn();
   };
 
@@ -39,7 +39,7 @@ export default function LoginScreen() {
           style={styles.ilustration}
         /> */}
 
-        <Illustration></Illustration>
+        <LoginIllustration></LoginIllustration>
         <View style={[styles.loginButtonContainer, { backgroundColor: loginButtonContainerBgC }]}
         >
           <Pressable style={styles.loginButton} onPress={() => { login() }}>
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2e7cf2'
   },
   loginButtonText: {
-    fontSize: 20,
+    fontSize: 15,
     fontFamily: 'Muli-Bold',
     color: '#fff',
   },
