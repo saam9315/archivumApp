@@ -1,7 +1,7 @@
 import { StyleSheet, Text, useColorScheme, View, } from 'react-native'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
-import Colors from '../../constants/Colors';
+import Colors from '../../../constants/Colors';
 
 
 const SearchBar = () => {
@@ -35,12 +35,14 @@ const styles = StyleSheet.create({
     searchBarContainer:{
         justifyContent: 'center',
         alignItems: 'center',
-        width: '98%',
+        width: '97.7%',
         alignSelf: 'center',
         borderRadius: 100,
+        paddingBottom: 5,
+        paddingTop: 5
     },
     SearchBar: {
-        width: '98%',
+        width: '97.7%',
         resizeMode: 'contain',
         borderRadius: 100,
     },

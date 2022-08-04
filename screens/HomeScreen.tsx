@@ -2,7 +2,7 @@ import React from 'react';
 import { SafeAreaView, StyleSheet, useColorScheme, View } from 'react-native';
 import { RootTabScreenProps } from '../types';
 import ContainerList from '../components/ContainerView/ContainerList';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/ContainerView/SearchBar';
 import { useRecoilValue } from 'recoil';
 import { isLoadingAtom } from '../stores/Atoms';
 import { Loading } from '../components/Loading';

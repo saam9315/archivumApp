@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Suspense } from 'react';
+import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RecoilRoot } from 'recoil';
 import { Loading } from './components/Loading';
@@ -13,7 +14,7 @@ export default function App() {
 
 
   if (!isLoadingComplete) {
-    return null;
+    return (<ActivityIndicator></ActivityIndicator>)
   } else {
     return (
       <RecoilRoot>
