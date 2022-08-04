@@ -11,16 +11,17 @@ import { Router } from './routes/Router';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
+  const colorScheme = useColorScheme();
 
 
   if (!isLoadingComplete) {
-    return (<ActivityIndicator></ActivityIndicator>)
+    return (<ActivityIndicator color= {colorScheme==='dark'?'white':'black'} animating={true} size='small'/>)
   } else {
     return (
       <RecoilRoot>
         <AuthProvider>
 
-          <Suspense fallback={<Loading></Loading>}>
+          <Suspense fallback={<ActivityIndicator color= {colorScheme==='dark'?'white':'black'} animating={true} size='small'/>}>
             <SafeAreaProvider>
               <Router />
               <StatusBar />
