@@ -1,7 +1,7 @@
 import { Alert, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
-import { ContainerProps } from '../../types'
-import ContainerCardFooterIcons from './ContainerCardFooterIcons'
+import { ContainerProps } from '../../../types'
+import ContainerCardFooterIcons from '../ContainerCardFooterIcons'
 
 
 const ContainerCard = ({ container }: ContainerProps) => {

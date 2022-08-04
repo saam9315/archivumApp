@@ -10,7 +10,7 @@ const LoginPageHeader = () => {
         <View style={[styles.headerIconContainer, { backgroundColor: iconBackground }]}
         >
             <Image
-                source={require('../../assets/images/fav-icon_with-bg.png')}
+                source={require('../../../assets/images/fav-icon_with-bg.png')}
                 fadeDuration={0}
                 style={[styles.headerIcon, { backgroundColor: iconBackground }]}
             />

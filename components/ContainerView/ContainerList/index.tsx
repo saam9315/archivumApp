@@ -2,7 +2,7 @@ import { ActivityIndicator, FlatList, StyleSheet, useColorScheme, View } from 'r
 import React from 'react'
 import ContainerCard from '../ContainerCard'
 import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil';
-import { containerListSelector, isLoadingAtom, isRefreshingAtom, userTokenAtom } from '../../stores/Atoms';
+import { containerListSelector, isLoadingAtom, isRefreshingAtom, userTokenAtom } from '../../../stores/Atoms';
 
 const ContainerList = () => {
     const themeMode = useColorScheme();

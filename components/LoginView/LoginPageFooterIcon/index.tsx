@@ -10,8 +10,8 @@ const LoginPageFooterIcon = () => {
         >
             <Image
                 source={themeMode === 'dark'
-                    ? require('../../assets/images/mobilabLogoDark.png')
-                    : require('../../assets/images/mobilabLogoLight.png')}
+                    ? require('../../../assets/images/mobilabLogoDark.png')
+                    : require('../../../assets/images/mobilabLogoLight.png')}
                 fadeDuration={0}
                 style={styles.footerIcon}
             />

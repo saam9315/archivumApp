@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, useColorScheme, View } from 'react-native';
 import { RootTabScreenProps } from '../types';
-import ContainerList from '../components/ContainerList';
+import ContainerList from '../components/ContainerView/ContainerList';
 import SearchBar from '../components/SearchBar';
 import { useRecoilValue } from 'recoil';
 import { isLoadingAtom } from '../stores/Atoms';
@@ -15,7 +15,7 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScree
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: containerBgC }]}>
-      {/* <SearchBar /> */}
+      <SearchBar />
       <ContainerList />
     </SafeAreaView>
   )

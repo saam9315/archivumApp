@@ -1,6 +1,7 @@
 import { StyleSheet, Text, useColorScheme, View, } from 'react-native'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
+import Colors from '../../constants/Colors';
 
 
 const SearchBar = () => {
@@ -12,23 +13,35 @@ const SearchBar = () => {
     const onChangeSearch = (query: any) => setSearchQuery(query);
 
     return (
-
+        <View style= {[styles.searchBarContainer, {backgroundColor: colorScheme==='dark'? '#161f28': '#eaecf5'}]} >
         <Searchbar
-            style={[styles.SearchBar, { color: colorScheme === 'dark' ? 'black' : 'white', backgroundColor: colorScheme === 'dark' ? '#1d2a38' : '#eaecf5', shadowColor: colorScheme === 'dark' ? '#1d2a38' : '#eaecf5' }]}
+            style={[styles.SearchBar, { backgroundColor: colorScheme === 'dark' ? '#161f28' : 'white', shadowColor:colorScheme==='dark'?'#161f28':'#eaecf5'}]}
             placeholder="Search"
+            theme={{colors: {text: colorScheme=== 'dark'? 'white': 'black'}}}
+            selectionColor={Colors.tintColorLight}
+            placeholderTextColor={colorScheme==='dark'? 'lightgrey': 'grey'}
+            iconColor= {colorScheme==='dark'? 'lightgrey': 'grey'}
             onChangeText={onChangeSearch}
             value={searchQuery}
             icon="magnify"
         />
+        </View>
     )
 }
 
 export default SearchBar
 
 const styles = StyleSheet.create({
+    searchBarContainer:{
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '98%',
+        alignSelf: 'center',
+        borderRadius: 100,
+    },
     SearchBar: {
-        width: '100%',
-        // backgroundColor: 'red',
-
+        width: '98%',
+        resizeMode: 'contain',
+        borderRadius: 100,
     },
 })

@@ -2,9 +2,9 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, useColorScheme, Image, Pressable, Text, View } from 'react-native';
 import { useSetRecoilState } from 'recoil';
-import LoginIllustration from '../components/LoginIllusatration';
-import LoginPageFooterIcon from '../components/LoginPageFooterIcon';
-import LoginPageHeader from '../components/LoginPageHeader';
+import LoginIllustration from '../components/LoginView/LoginIllusatration';
+import LoginPageFooterIcon from '../components/LoginView/LoginPageFooterIcon';
+import LoginPageHeader from '../components/LoginView/LoginPageHeader';
 import { useAuth } from '../contexts/Auth';
 import { isLoadingAtom } from '../stores/Atoms';
 
