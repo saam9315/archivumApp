@@ -1,18 +1,20 @@
-import { useAutoDiscovery } from 'expo-auth-session';
-import React, { useState } from 'react';
+
+import React from 'react';
 import { StyleSheet, SafeAreaView, useColorScheme, Image, Pressable, Text, View } from 'react-native';
-import LoginPageFooterIcon from '../components/LoginPageFooterIcon';
-import LoginPageHeader from '../components/LoginPageHeader';
+import { useSetRecoilState } from 'recoil';
+import LoginIllustration from '../components/LoginView/LoginIllusatration';
+import LoginPageFooterIcon from '../components/LoginView/LoginPageFooterIcon';
+import LoginPageHeader from '../components/LoginView/LoginPageHeader';
 import { useAuth } from '../contexts/Auth';
+import { isLoadingAtom } from '../stores/Atoms';
 
 export default function LoginScreen() {
 
-  const [loading, isLoading] = useState(false);
-
+  const setIsLoading = useSetRecoilState(isLoadingAtom)
   const auth = useAuth();
 
   const login = async () => {
-    isLoading(true);
+    setIsLoading(true);
     await auth.signIn();
   };
 
@@ -31,11 +33,13 @@ export default function LoginScreen() {
         <Text style={[styles.headerText, { color: headerTextColor }]}
         >
           Cool down your Hot data with Archivum</Text>
-        <Image
-          source={require('../assets/images/illustration-archivum.png')}
+        {/* <Image
+          source={require('../assets/images/archivum-illustration.svg')}
           fadeDuration={0}
           style={styles.ilustration}
-        />
+        /> */}
+
+        <LoginIllustration></LoginIllustration>
         <View style={[styles.loginButtonContainer, { backgroundColor: loginButtonContainerBgC }]}
         >
           <Pressable style={styles.loginButton} onPress={() => { login() }}>
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2e7cf2'
   },
   loginButtonText: {
-    fontSize: 20,
+    fontSize: 15,
     fontFamily: 'Muli-Bold',
     color: '#fff',
   },

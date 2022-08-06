@@ -37,20 +37,9 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> = Composit
   NativeStackScreenProps<RootStackParamList>
 >;
 
-type State = {
-  isLoading: boolean;
-  isSignout: boolean;
-  userToken: undefined | string;
-};
-
-type Action =
-  | { type: 'RESTORE_TOKEN'; token: undefined | string }
-  | { type: 'SIGN_IN'; token: string }
-  | { type: 'SIGN_OUT' };
-
 
 export interface User {
-  id?: number
+  id?: string
   name: string
   email: string
 }
@@ -67,17 +56,19 @@ export interface ContainerParameter {
   values?: string[];
 }
 
-export interface Container {
-  name: string;
-  requiredParameters?: Array<ContainerParameter>;
-  description: string;
+export default interface Container {
   apiKey?: string;
   archivalDuration?: string; // pattern: ^P(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$
   connectors?: ContainerConnector[];
+  description: string;
   displayName: string;
+  indexingProperties?: Array<{}>
+  creationDateTime?: string;
   mediaType?: string;
-  owner?: [];
-  ownerGroups?: Array<Group>;
+  name: string;
+  owner?: string[];
+  ownerGroups?: Array<{}>;
+  requiredParameters?: Array<{}>;
   retentionDuration?: string; // pattern: ^P(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$
   rules?: Rule[];
   userGroups?: Array<Group>;

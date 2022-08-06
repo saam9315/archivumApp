@@ -40,7 +40,7 @@ export default function BottomTabNavigator() {
                             style={styles.headerIcon}
                         />
                     ),
-                    tabBarIcon: () => <Feather name="home" size={24} color={colorScheme === 'dark' ? 'white' : 'black'} />,
+                    tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
                     headerLeft: () => (
                         <Pressable
                             onPress={() => navigation.navigate('Modal')}
@@ -50,7 +50,7 @@ export default function BottomTabNavigator() {
                             <Ionicons
                                 name="information-circle-outline"
                                 size={24}
-                                color={colorScheme === 'dark' ? 'white' : 'black'}
+                                color='grey'
                                 style={{ marginLeft: 15 }}
                             />
                         </Pressable>
@@ -61,7 +61,7 @@ export default function BottomTabNavigator() {
                             style={({ pressed }) => ({
                                 opacity: pressed ? 0.5 : 1,
                             })}>
-                            <MaterialCommunityIcons style={{ marginRight: 15 }} name="logout" size={24} color={colorScheme === 'dark' ? 'white' : 'black'} />
+                            <MaterialCommunityIcons style={{ marginRight: 15 }} name="logout" size={24} color='grey' />
                         </Pressable>
                     ),
                 })}
@@ -83,7 +83,7 @@ export default function BottomTabNavigator() {
                         //backgroundColor: 'grey'
                     },
                     title: 'Groups',
-                    tabBarIcon: ({ color }) => <Ionicons name="people" size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <Ionicons name="people-outline" size={24} color={color} />,
                 }}
             />
         </BottomTab.Navigator>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     headerIcon: {
         width: 30,
         height: 30,
-        top: -2
+        top: -6
     },
     icon: {
         paddingLeft: 10
