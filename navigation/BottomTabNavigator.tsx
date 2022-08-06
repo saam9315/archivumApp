@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     headerIcon: {
         width: 30,
         height: 30,
-        top: -2
+        top: -6
     },
     icon: {
         paddingLeft: 10

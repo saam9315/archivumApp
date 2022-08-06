@@ -1,8 +1,8 @@
 import { ActivityIndicator, FlatList, StyleSheet, useColorScheme, View } from 'react-native'
 import React from 'react'
 import ContainerCard from '../ContainerCard'
-import { useRecoilRefresher_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil';
-import { containerListSelector, isLoadingAtom, isRefreshingAtom, userTokenAtom } from '../../../stores/Atoms';
+import { useRecoilValue } from 'recoil';
+import { containerListSelector } from '../../../stores/Atoms';
 
 const ContainerList = () => {
     const themeMode = useColorScheme();
@@ -28,5 +28,6 @@ export default ContainerList
 const styles = StyleSheet.create({
     listContainer: {
         width: '100%',
+
     },
 })

@@ -13,18 +13,18 @@ const SearchBar = () => {
     const onChangeSearch = (query: any) => setSearchQuery(query);
 
     return (
-        <View style= {[styles.searchBarContainer, {backgroundColor: colorScheme==='dark'? '#161f28': '#eaecf5'}]} >
-        <Searchbar
-            style={[styles.SearchBar, { backgroundColor: colorScheme === 'dark' ? '#161f28' : 'white', shadowColor:colorScheme==='dark'?'#161f28':'#eaecf5'}]}
-            placeholder="Search"
-            theme={{colors: {text: colorScheme=== 'dark'? 'white': 'black'}}}
-            selectionColor={Colors.tintColorLight}
-            placeholderTextColor={colorScheme==='dark'? 'lightgrey': 'grey'}
-            iconColor= {colorScheme==='dark'? 'lightgrey': 'grey'}
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            icon="magnify"
-        />
+        <View style={[styles.searchBarContainer, { backgroundColor: colorScheme === 'dark' ? '#1d2a38' : '#eaecf5' }]} >
+            <Searchbar
+                style={[styles.SearchBar, { backgroundColor: colorScheme === 'dark' ? '#161f28' : 'white', shadowColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5' }]}
+                placeholder="Search"
+                theme={{ colors: { text: colorScheme === 'dark' ? 'white' : 'black' } }}
+                selectionColor={Colors.tintColorLight}
+                placeholderTextColor={colorScheme === 'dark' ? 'lightgrey' : 'grey'}
+                iconColor={colorScheme === 'dark' ? 'lightgrey' : 'grey'}
+                onChangeText={onChangeSearch}
+                value={searchQuery}
+                icon="magnify"
+            />
         </View>
     )
 }
@@ -32,19 +32,20 @@ const SearchBar = () => {
 export default SearchBar
 
 const styles = StyleSheet.create({
-    searchBarContainer:{
+    searchBarContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         width: '97.7%',
-        height: 45,
+        height: 50,
         alignSelf: 'center',
-        borderRadius: 100,
         paddingBottom: 5,
-        paddingTop: 5
+        paddingTop: 5,
+        resizeMode: 'contain',
     },
     SearchBar: {
         width: '97.7%',
         resizeMode: 'contain',
-        borderRadius: 100,
+        borderRadius: 50,
+        height: 45,
     },
 })
