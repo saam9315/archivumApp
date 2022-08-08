@@ -12,7 +12,7 @@ const ContainerCard = ({ container }: ContainerProps) => {
 
     return (
         <Pressable
-            onPress={() => { Alert.alert('Container Card Pressed!') }}
+            onPress={() => { Alert.alert('Container Card Pressed! Display name: ', container.displayName) }}
             style={[
                 styles.containerCard,
                 {

@@ -64,11 +64,11 @@ const AuthProvider: React.FC = ({ children }) => {
   useEffect(() => {
     //Every time the App is opened, this provider is rendered
     //and call de loadStorage function.
-    loadStorageData();
+    loadStorageData(discovery);
   }, []);
 
 
-  async function loadStorageData() {
+  async function loadStorageData(discovery: AuthSession.DiscoveryDocument | null) {
     try {
       //Try get the data from Async Storage
       const authDataSerialized = await AsyncStorage.getItem('tokenObject');
