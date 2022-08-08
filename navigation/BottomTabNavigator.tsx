@@ -1,4 +1,4 @@
-import { AntDesign, Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { useColorScheme, Image, Pressable, StyleSheet } from "react-native";
@@ -41,20 +41,20 @@ export default function BottomTabNavigator() {
                         />
                     ),
                     tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
-                    headerLeft: () => (
-                        <Pressable
-                            onPress={() => navigation.navigate('Modal')}
-                            style={({ pressed }) => ({
-                                opacity: pressed ? 0.5 : 1,
-                            })}>
-                            <Ionicons
-                                name="information-circle-outline"
-                                size={24}
-                                color='grey'
-                                style={{ marginLeft: 15 }}
-                            />
-                        </Pressable>
-                    ),
+                    // headerLeft: () => (
+                    //     <Pressable
+                    //         onPress={() => navigation.navigate('Modal')}
+                    //         style={({ pressed }) => ({
+                    //             opacity: pressed ? 0.5 : 1,
+                    //         })}>
+                    //         <Ionicons
+                    //             name="information-circle-outline"
+                    //             size={24}
+                    //             color='grey'
+                    //             style={{ marginLeft: 15 }}
+                    //         />
+                    //     </Pressable>
+                    // ),
                     headerRight: () => (
                         <Pressable
                             onPress={signOut}

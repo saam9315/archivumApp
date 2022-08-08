@@ -6,7 +6,7 @@ import { RootStackParamList, RootTabParamList } from '../types';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BottomTabNavigator from '../navigation/BottomTabNavigator';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import ModalScreen from '../screens/ModalScreen';
+import ModalScreen  from '../screens/ModalScreen';
 import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

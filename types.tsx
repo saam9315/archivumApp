@@ -17,7 +17,7 @@ export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Login: undefined;
   Home: undefined;
-  Modal: undefined;
+  Modal: Container | undefined;
   NotFound: undefined;
 };
 
@@ -56,7 +56,7 @@ export interface ContainerParameter {
   values?: string[];
 }
 
-export default interface Container {
+export interface Container {
   apiKey?: string;
   archivalDuration?: string; // pattern: ^P(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$
   connectors?: ContainerConnector[];

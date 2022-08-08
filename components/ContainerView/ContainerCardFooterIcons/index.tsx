@@ -1,15 +1,16 @@
-import { StyleSheet, Text, useColorScheme, View } from 'react-native'
+import { Alert, StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
-import { FontAwesome, Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons';
 import Colors from '../../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
+import { Container, ContainerProps, RootTabScreenProps } from '../../../types';
 
 
-const ContainerCardFooterIcons = () => {
-
+const ContainerCardFooterIcons = (container : ContainerProps) => {
     const navigation = useNavigation();
-
     const onPress = () => {
+        //console.log('key params are: ', container)
+        navigation.navigate('Modal', container.container)
     }
     const colorScheme = useColorScheme();
     const backgroundColor = colorScheme === 'dark' ? '#161f28' : 'white';
@@ -24,7 +25,7 @@ const ContainerCardFooterIcons = () => {
                     style={{ marginRight: 2 }}
                     selectionColor={Colors.light.tint}
                     backgroundColor={backgroundColor}
-                    onPress={() => { console.warn('Hello there') }}
+                    onPress={() => {}}
                     size={14}
                     color={iconColor}
                 />
@@ -32,7 +33,7 @@ const ContainerCardFooterIcons = () => {
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Ionicons.Button onPress={onPress} style={{ marginRight: -13 }} backgroundColor={backgroundColor} name="people-outline" size={16} color={iconColor} />
+                <Ionicons.Button style={{ marginRight: -13 }} backgroundColor={backgroundColor} name="people-outline" size={16} color={iconColor} />
                 <Text style={{ color: textColor }}>2</Text>
             </View>
 
@@ -41,7 +42,7 @@ const ContainerCardFooterIcons = () => {
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
-                <AntDesign.Button style={{ marginRight: -12 }} backgroundColor={backgroundColor} selectionColor={Colors.dark.tint} name="addfile" size={16} color={iconColor} />
+                <AntDesign.Button onPress={onPress} style={{ marginRight: -12 }} backgroundColor={backgroundColor} selectionColor={Colors.dark.tint} name="addfile" size={16} color={iconColor} />
             </View>
         </View>
     )
