@@ -6,11 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { Container, ContainerProps, RootTabScreenProps } from '../../../types';
 
 
-const ContainerCardFooterIcons = (container : ContainerProps) => {
+const ContainerCardFooterIcons = (container: ContainerProps) => {
     const navigation = useNavigation();
     const onPress = () => {
         //console.log('key params are: ', container)
-        navigation.navigate('Modal', container.container)
+        navigation.navigate('FileUploadModal', container.container)
     }
     const colorScheme = useColorScheme();
     const backgroundColor = colorScheme === 'dark' ? '#161f28' : 'white';
@@ -25,7 +25,7 @@ const ContainerCardFooterIcons = (container : ContainerProps) => {
                     style={{ marginRight: 2 }}
                     selectionColor={Colors.light.tint}
                     backgroundColor={backgroundColor}
-                    onPress={() => {}}
+                    onPress={() => { }}
                     size={14}
                     color={iconColor}
                 />

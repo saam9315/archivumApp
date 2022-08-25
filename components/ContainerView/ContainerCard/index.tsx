@@ -35,7 +35,7 @@ const ContainerCard = ({ container }: ContainerProps) => {
             >
                 {container.description}
             </Text>
-            <ContainerCardFooterIcons container = {container}/>
+            <ContainerCardFooterIcons container={container} />
 
         </Pressable>
     )

@@ -26,7 +26,7 @@ const linking: LinkingOptions<RootStackParamList> = {
           },
         },
       },
-      Modal: "modal",
+      FileUploadModal: "FileUploadModal",
       NotFound: "*",
     },
   },

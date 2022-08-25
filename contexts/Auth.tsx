@@ -1,6 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwtDecode from 'jwt-decode';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 //import { AuthData, authService } from '../services/authService';
@@ -66,6 +65,7 @@ const AuthProvider: React.FC = ({ children }) => {
     //and call de loadStorage function.
     loadStorageData(discovery);
   }, []);
+
 
 
   async function loadStorageData(discovery: AuthSession.DiscoveryDocument | null) {

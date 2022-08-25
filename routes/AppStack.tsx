@@ -6,19 +6,22 @@ import { RootStackParamList, RootTabParamList } from '../types';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BottomTabNavigator from '../navigation/BottomTabNavigator';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import ModalScreen  from '../screens/ModalScreen';
+import FileUploadModal from '../screens/FileUploadModal';
 import { NavigationContainer } from '@react-navigation/native';
+import { useColorScheme } from 'react-native';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 
 export const AppStack = () => {
+  const themeMode = useColorScheme();
+  const headerBackgroundColor = themeMode === 'dark' ? "#1d2a38" : "white";
   return (
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false, animationTypeForReplace: 'push', animation: 'slide_from_right' }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
+      <Stack.Group screenOptions={{ presentation: 'modal', title: 'File Upload', headerStyle: { backgroundColor: headerBackgroundColor } }}>
+        <Stack.Screen name="FileUploadModal" component={FileUploadModal} />
       </Stack.Group>
     </Stack.Navigator>
   )

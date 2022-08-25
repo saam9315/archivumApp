@@ -90,15 +90,15 @@ const styles = StyleSheet.create({
     bottom: -40,
   },
   loginButton: {
-    width: '50%',
-    height: '80%',
+    width: '80%',
+    height: '100%',
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#2e7cf2'
   },
   loginButtonText: {
-    fontSize: 15,
+    fontSize: 20,
     fontFamily: 'Muli-Bold',
     color: '#fff',
   },

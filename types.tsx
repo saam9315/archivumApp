@@ -17,7 +17,7 @@ export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Login: undefined;
   Home: undefined;
-  Modal: Container | undefined;
+  FileUploadModal: Container | undefined;
   NotFound: undefined;
 };
 
@@ -50,11 +50,17 @@ export interface Group {
   owners?: User[]
 }
 
-export interface ContainerParameter {
+export interface KeyParameter {
   name: string;
   type: string;
   values?: string[];
 }
+
+export interface ContainerParameters {
+  containerParameters: KeyParameter[];
+}
+
+
 
 export interface Container {
   apiKey?: string;
