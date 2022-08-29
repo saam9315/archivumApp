@@ -11,7 +11,7 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
     //console.log(containerParameters.reduce((acc: any, cur: { name: any; value: any; }) => ({ ...acc, [cur.name]: '' }), {}));
 
     return (
-        <View style={styles.mainContainer}>
+        <View style={[styles.mainContainer, {backgroundColor: colorScheme === 'dark' ? '##161f28' : '#eaecf5'  }]}>
             <Formik
                 initialValues={containerParameters.reduce((acc: any, cur: { name: any; value: any; }) => ({ ...acc, [cur.name]: '' }), {})}
                 onSubmit={(values, actions) => {
@@ -21,8 +21,8 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                 }}
             >
                 {props => (
-                    <View style={styles.keyParamContainer}>
-                        <View style={styles.separator} lightColor="black" darkColor="rgba(255,255,255,0.1)" />
+                    <View style={[styles.keyParamContainer, {backgroundColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5'  }]}>
+                        <View style={styles.separator} lightColor="black" darkColor='grey' />
                         <Text style={[styles.keyParamSectionTitle, { color: colorScheme === 'dark' ? 'white' : 'black' }]}>
                             Key Parameters
                         </Text>
@@ -30,7 +30,7 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                             {containerParameters.map(function (item: any, index: number) {
                                 let itemName = item.name
                                 return (
-                                    <View style={styles.keyParamRow} key={index}>
+                                    <View style={[styles.keyParamRow, {backgroundColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5'  }]} key={index} >
                                         <Text style={[styles.keyParamNameText, { color: colorScheme === 'dark' ? 'white' : 'black' }]}>
                                             {item.name}:
                                         </Text>
@@ -50,7 +50,7 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
 
                                 )
                             })}
-                            <View style={styles.buttonContainer}>
+                            <View style={[styles.buttonContainer, {backgroundColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5'  }]}>
                                 <Pressable style={styles.submitButton} onPress={() => { }}>
                                     <Text style={styles.submitButtonText}>Submit</Text>
                                 </Pressable>
@@ -77,9 +77,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     keyParamSectionTitle: {
-        padding: 5,
+        padding: 10,
         fontSize: 20,
-        fontFamily: 'Muli-Bold',
         color: '#fff',
     },
     keyParamRow: {
@@ -91,7 +90,6 @@ const styles = StyleSheet.create({
     },
     keyParamNameText: {
         fontSize: 20,
-        fontFamily: 'Muli-Bold',
         color: '#fff',
     },
     mainContainer: {
@@ -124,7 +122,6 @@ const styles = StyleSheet.create({
     },
     submitButtonText: {
         fontSize: 20,
-        fontFamily: 'Muli-Bold',
         color: '#fff',
     },
     separator: {

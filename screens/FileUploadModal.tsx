@@ -8,16 +8,16 @@ import { KeyParameter } from '../types';
 export default function FileUploadModal({ route }: any) {
   const containerParameters: KeyParameter[] = route.params.requiredParameters
   const { displayName } = route.params
-  const themeMode = useColorScheme();
-  const containerBackgroundColor = themeMode === 'dark' ? "#161f28" : '#eaecf5';
+  const colorScheme = useColorScheme();
+  const containerBackgroundColor = colorScheme === 'dark' ? "#161f28" : '#eaecf5';
   //console.log(containerParameters);
 
 
   return (
-    <View style={[styles.mainContainer]}>
+    <View style={[styles.mainContainer, {backgroundColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5'  }]}>
       <Text style={styles.title}>{displayName}</Text>
-      <View style={styles.separator} lightColor="black" darkColor="rgba(255,255,255,0.1)" />
-      <View style={styles.imageContainer}></View>
+      <View style={styles.separator} lightColor="black" darkColor='grey' />
+      <View style={[styles.imageContainer, {backgroundColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5'  }]}></View>
       <KeyParameterForm containerParameters={containerParameters} />
 
 
@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
   },
   separator: {
     marginVertical: 30,
