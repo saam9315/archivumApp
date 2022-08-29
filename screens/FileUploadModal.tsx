@@ -1,9 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Platform, StyleSheet, useColorScheme } from 'react-native';
+import { StyleSheet, useColorScheme } from 'react-native';
 import { Text, View } from '../components/Themed';
 import KeyParameterForm from '../components/FileUploadView/KeyParameterForm';
-import { ContainerParameters, KeyParameter } from '../types';
+import { KeyParameter } from '../types';
 
 
 export default function FileUploadModal({ route }: any) {
@@ -31,10 +30,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'yellow',
+    //backgroundColor: 'yellow',
   },
   imageContainer: {
-    backgroundColor: 'red',
+    //backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
