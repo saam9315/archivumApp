@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, useColorScheme } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, SafeAreaView, StyleSheet, TouchableWithoutFeedback, useColorScheme } from 'react-native';
 import { Text, View } from '../components/Themed';
 import KeyParameterForm from '../components/FileUploadView/KeyParameterForm';
 import { KeyParameter } from '../types';
+import ImageComponent from '../components/FileUploadView/ImageComponent';
 
 
 export default function FileUploadModal({ route }: any) {
@@ -14,14 +15,13 @@ export default function FileUploadModal({ route }: any) {
 
 
   return (
-    <View style={[styles.mainContainer, {backgroundColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5'  }]}>
+    <SafeAreaView style={[styles.mainContainer, { backgroundColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5' }]}>
       <Text style={styles.title}>{displayName}</Text>
       <View style={styles.separator} lightColor="black" darkColor='grey' />
-      <View style={[styles.imageContainer, {backgroundColor: colorScheme === 'dark' ? '#161f28' : '#eaecf5'  }]}></View>
+      <ImageComponent></ImageComponent>
       <KeyParameterForm containerParameters={containerParameters} />
 
-
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -30,21 +30,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    //backgroundColor: 'yellow',
-  },
-  imageContainer: {
-    //backgroundColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: '40%',
   },
   title: {
     fontSize: 20,
+    paddingTop: 10,
   },
   separator: {
-    marginVertical: 30,
+    marginVertical: 15,
     height: 1,
-    width: '80%',
+    width: '75%',
   },
 });

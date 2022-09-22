@@ -2,7 +2,7 @@ import axios from "axios";
 import { Alert } from "react-native";
 import { atom, selector } from "recoil";
 import { AuthData } from "../../contexts/Auth";
-import {Container} from "../../types";
+import { Container } from "../../types";
 
 export const userTokenAtom = atom<AuthData | undefined>({
   key: "userToken",
@@ -14,9 +14,9 @@ export const isLoadingAtom = atom({
   default: true,
 });
 
-export const shouldRefreshTokenAtom = atom ({
+export const shouldRefreshTokenAtom = atom({
   key: "shouldRefreshToken",
-  default: true
+  default: true,
 });
 
 export const containerListAtom = atom<Container[]>({
@@ -24,6 +24,10 @@ export const containerListAtom = atom<Container[]>({
   default: [],
 });
 
+export const selectedFileAtom = atom<string>({
+  key: "selectedFile",
+  default: "",
+});
 
 export const containerListSelector = selector({
   key: "containerListSelector",

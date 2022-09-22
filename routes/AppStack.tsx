@@ -15,7 +15,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppStack = () => {
   const themeMode = useColorScheme();
-  const headerBackgroundColor = themeMode === 'dark' ? "#1d2a38" : "white";
+  const headerBackgroundColor = themeMode === 'dark' ? "#1d2a38" : "#eaecf5";
   return (
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false, animationTypeForReplace: 'push', animation: 'slide_from_right' }} />
