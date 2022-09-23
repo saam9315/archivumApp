@@ -1,16 +1,16 @@
-import { Alert, StyleSheet, Text, useColorScheme, View } from 'react-native'
+import { StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
-import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Colors from '../../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
-import { Container, ContainerProps, RootTabScreenProps } from '../../../types';
+import { ContainerProps } from '../../../types';
 
 
 const ContainerCardFooterIcons = (container: ContainerProps) => {
     const navigation = useNavigation();
     const onPress = () => {
         //console.log('key params are: ', container)
-        navigation.navigate('FileUploadModal', container.container)
+        navigation.navigate('FileUploadScreen', container.container)
     }
     const colorScheme = useColorScheme();
     const backgroundColor = colorScheme === 'dark' ? '#161f28' : 'white';

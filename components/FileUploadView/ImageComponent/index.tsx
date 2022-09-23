@@ -67,7 +67,7 @@ const ImageComponent = () => {
                 }
             </View>
             <View style={styles.buttonContainer}>
-                <Button onPress={showImagePicker} title="Select an image" />
+                <Button onPress={showImagePicker} title="Select an existing image" />
                 <Button onPress={openCamera} title="Open camera" />
             </View>
         </View>
@@ -85,13 +85,17 @@ const styles = StyleSheet.create({
     buttonContainer: {
         //backgroundColor: 'green',
         flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     imageContainer: {
-        //backgroundColor: 'yellow',
+        backgroundColor: 'lightblue',
+        bottom: 100
+        
     },
     image: {
-        width: 300,
-        height: 200,
+        width: 400,
+        height: 300,
         resizeMode: 'contain'
     }
 });
