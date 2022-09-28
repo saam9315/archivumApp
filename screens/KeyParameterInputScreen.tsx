@@ -10,17 +10,14 @@ export default function KeyParameterInputScreen({ route }: any) {
   const { displayName } = route.params;
   const colorScheme = useColorScheme();
   const containerBackgroundColor =
-  colorScheme === "dark" ? "#161f28" : "#eaecf5";
-  
+    colorScheme === "dark" ? "#161f28" : "#eaecf5";
+
   return (
-    <SafeAreaView style={[ styles.mainContainer, { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" }]}>
-<KeyParameterForm containerParameters={containerParameters} />
-      <View style={[ styles.buttonContainer, { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" }]}>
-        <Pressable style={styles.submitButton} onPress={() => {}}>
-          <Text style={styles.submitButtonText}>Submit</Text>
-        </Pressable>
+    <SafeAreaView style={[styles.mainContainer, { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" }]}>
+      <KeyParameterForm containerParameters={containerParameters} />
+      <View style={[styles.buttonContainer, { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" }]}>
       </View>
-      </SafeAreaView>
+    </SafeAreaView>
 
 
   )
@@ -30,7 +27,7 @@ export default function KeyParameterInputScreen({ route }: any) {
 <TouchableOpacity onPress={() => navigation.replace('Root')} style={styles.link}>
   <Text style={styles.linkText}>Go to home screen!</Text>
 </TouchableOpacity>
-</View>*/ 
+</View>*/
 
 const styles = StyleSheet.create({
   container: {
@@ -64,14 +61,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#2e7cf2',
     margin: 10,
-},
-buttonContainer: {
+  },
+  buttonContainer: {
     justifyContent: 'center',
     alignItems: 'center',
 
-},
-submitButtonText: {
+  },
+  submitButtonText: {
     fontSize: 18,
     color: '#fff',
-},
+  },
 });

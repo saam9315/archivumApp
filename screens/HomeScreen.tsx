@@ -14,7 +14,7 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScree
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: containerBgC }]}>
-      {/* <SearchBar /> */}
+      <SearchBar />
       <ContainerList />
     </SafeAreaView>
   )

@@ -17,15 +17,15 @@ export default function FileUploadScreen({ route }: any) {
     <SafeAreaView
       style={[
         styles.mainContainer,
-        { backgroundColor: colorScheme === "dark" ? "yellow" : "#eaecf5" },
+        { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" },
       ]}
     >
-      <View style={[styles.titleContainer, { backgroundColor: containerBackgroundColor}]}>
-      <Text style={styles.title}>Container name: {displayName}</Text>
-      {/*<Text style={styles.title}>Description: {description}</Text>*/}
-      <View style={styles.separator} lightColor="black" darkColor="grey" />
+      <View style={[styles.titleContainer, { backgroundColor: containerBackgroundColor }]}>
+        <Text style={styles.title}>Container name: {displayName}</Text>
+        {/*<Text style={styles.title}>Description: {description}</Text>*/}
+        <View style={styles.separator} lightColor="black" darkColor="grey" />
       </View>
-      <ImageComponent route ={route} ></ImageComponent>
+      <ImageComponent route={route} ></ImageComponent>
     </SafeAreaView>
   );
 }
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  titleContainer:{
+  titleContainer: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -52,6 +52,6 @@ const styles = StyleSheet.create({
     height: 1,
     width: "75%",
     marginTop: 20
-    
+
   },
 });

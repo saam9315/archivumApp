@@ -9,7 +9,7 @@ import { ContainerProps } from '../../../types';
 const ContainerCardFooterIcons = (container: ContainerProps) => {
     const navigation = useNavigation();
     const onPress = () => {
-        //console.log('key params are: ', container)
+        console.log('key params are: ', container.container.requiredParameters)
         navigation.navigate('FileUploadScreen', container.container)
     }
     const colorScheme = useColorScheme();

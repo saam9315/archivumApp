@@ -1,19 +1,11 @@
-import {
-  Button,
-  StyleSheet,
-  Image,
-  View,
-  useColorScheme,
-  Pressable,
-  Text
-} from "react-native";
+import { Button, StyleSheet, Image, View, useColorScheme, Pressable, Text } from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useSetRecoilState } from "recoil";
 import { selectedFileAtom } from "../../../stores/Atoms";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ImageComponent ({ route }: any) {
+export default function ImageComponent({ route }: any) {
   // The path of the picked image
   const [pickedImagePath, setPickedImagePath] = useState("");
   const setFileName = useSetRecoilState<string>(selectedFileAtom);
@@ -27,7 +19,7 @@ export default function ImageComponent ({ route }: any) {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your photos!");
+      alert("You've refused to allow this app to access your photos!");
       return;
     }
 
@@ -49,7 +41,7 @@ export default function ImageComponent ({ route }: any) {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
+      alert("You've refused to allow this app to access your camera!");
       return;
     }
 
@@ -109,7 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   imageContainer: {
-    backgroundColor: "lightblue",
+    //backgroundColor: "lightblue",
     bottom: 100,
   },
   image: {
