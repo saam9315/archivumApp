@@ -13,10 +13,8 @@ export default function KeyParameterInputScreen({ route }: any) {
     colorScheme === "dark" ? "#161f28" : "#eaecf5";
 
   return (
-    <SafeAreaView style={[styles.mainContainer, { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" }]}>
+    <SafeAreaView style={[styles.mainContainer, { backgroundColor: colorScheme === "dark" ? "#161f28" : '#eaecf5' }]}>
       <KeyParameterForm containerParameters={containerParameters} />
-      <View style={[styles.buttonContainer, { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" }]}>
-      </View>
     </SafeAreaView>
 
 
@@ -30,45 +28,7 @@ export default function KeyParameterInputScreen({ route }: any) {
 </View>*/
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-  linkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
   mainContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  submitButton: {
-    width: 200,
-    height: 45,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2e7cf2',
-    margin: 10,
-  },
-  buttonContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-
-  },
-  submitButtonText: {
-    fontSize: 18,
-    color: '#fff',
   },
 });

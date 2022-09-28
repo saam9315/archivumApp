@@ -18,7 +18,7 @@ export const AppStack = () => {
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ title: 'Home', headerShown: false, animationTypeForReplace: 'push', animation: 'slide_from_right' }} />
       <Stack.Group>
         <Stack.Screen name="FileUploadScreen" component={FileUploadScreen} options={{ title: 'Select a File ', headerStyle: { backgroundColor: headerBackgroundColor } }} />
-        <Stack.Screen name="KeyParameterInputScreen" component={KeyParameterInputScreen} options={{ title: 'Enter Key Parameters', headerStyle: { backgroundColor: headerBackgroundColor } }} />
+        <Stack.Screen name="KeyParameterInputScreen" component={KeyParameterInputScreen} options={{ title: 'File Details', headerStyle: { backgroundColor: headerBackgroundColor } }} />
       </Stack.Group>
     </Stack.Navigator>
   )

@@ -5,9 +5,10 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
     Keyboard,
+    View,
+    KeyboardAvoidingView
 } from "react-native";
-import React from "react";
-import { View } from "../../../components/Themed";
+import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { Formik } from "formik";
 import { KeyParameter } from "../../../types";
@@ -15,60 +16,44 @@ import { useRecoilState } from "recoil";
 import { selectedFileAtom } from "../../../stores/Atoms";
 import SelectDropdown from 'react-native-select-dropdown'
 import { FontAwesome } from "@expo/vector-icons";
+import Separator from "../../Separator";
 
 const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
     const colorScheme = useColorScheme();
     const [fileName, setFileName] = useRecoilState(selectedFileAtom);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
 
     //console.log(containerParameters)
     //console.log(containerParameters.flatMap((item: { name: String; }): String => item.name));
     //console.log(containerParameters.reduce((acc: any, cur: { name: any; value: any; }) => ({ ...acc, [cur.name]: '' }), {}));
 
     return (
-        <View style={[styles.mainContainer]}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <Formik
-                    initialValues={containerParameters.reduce(
-                        (acc: any, cur: { name: any; value: any }) => ({
-                            ...acc,
-                            [cur.name]: "",
-                        }),
-                        {}
-                    )}
-                    onSubmit={(values, actions) => {
-                        actions.resetForm();
-                        console.log(values)
-                    }}
-                >
-                    {(props) => (
-                        <View
-                            style={[
-                                styles.keyParamContainer,
-                                {
-                                    backgroundColor:
-                                        colorScheme === "dark" ? "#161f28" : "#eaecf5",
-                                },
-                            ]}
-                        >
-                            <Text
-                                style={[
-                                    styles.keyParamSectionTitle,
-                                    { color: colorScheme === "dark" ? "white" : "black" },
-                                ]}
-                            >
-                                Key Parameters
-                            </Text>
+        <ScrollView style={[styles.mainContainer]}>
+            <KeyboardAvoidingView behavior='position'>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <Formik
+                        initialValues={containerParameters.reduce(
+                            (acc: any, cur: { name: any; value: any }) => ({
+                                ...acc,
+                                [cur.name]: "",
+                            }),
+                            {}
+                        )}
+                        onSubmit={(values, actions) => {
+                            actions.resetForm();
+                            console.log(values)
+                        }}
+                    >
+                        {(props) => (
                             <View
-                                style={styles.separator}
-                                lightColor="black"
-                                darkColor="grey"
-                            />
-                            <ScrollView
-                                style={{
-                                    flex: 1,
-                                    backgroundColor:
-                                        colorScheme === "dark" ? "#161f28" : "#eaecf5",
-                                }}
+                                style={[
+                                    styles.keyParamContainer,
+                                    {
+                                        backgroundColor:
+                                            colorScheme === "dark" ? "#161f28" : "#eaecf5",
+                                    },
+                                ]}
                             >
                                 <View
                                     style={[
@@ -98,12 +83,23 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
 
                                         theme={{
                                             colors: {
-                                                text: colorScheme === "dark" ? "white" : "black",
+                                                text: colorScheme === "dark" ? "black" : "black",
                                             },
                                         }}
-                                        value={""}
+                                        value={fileName}
                                     />
                                 </View>
+
+                                <Separator />
+
+                                <Text
+                                    style={[
+                                        styles.keyParamSectionTitle,
+                                        { color: colorScheme === "dark" ? "white" : "black" },
+                                    ]}
+                                >
+                                    Key Parameters
+                                </Text>
 
                                 {containerParameters.map(function (item: any, index: number) {
                                     let itemName = item.name;
@@ -169,9 +165,7 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                                                     placeholder={item.type}
                                                     value={props.values.itemName}
                                                 />
-
                                             }
-
 
                                         </View>
                                     );
@@ -185,14 +179,16 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                                         },
                                     ]}
                                 >
-                                    <Button style={styles.submitButton} color='white' onPress={props.handleSubmit}> Submit</Button>
+                                    <Button style={[styles.submitButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]} color='white' onPress={props.handleSubmit} disabled={isButtonDisabled}> Submit</Button>
                                 </View>
-                            </ScrollView>
-                        </View>
-                    )}
-                </Formik>
-            </TouchableWithoutFeedback>
-        </View>
+
+                            </View>
+                        )}
+                    </Formik>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </ScrollView>
+
     );
 };
 
@@ -200,33 +196,28 @@ export default KeyParameterForm;
 
 const styles = StyleSheet.create({
     mainContainer: {
-        alignItems: "center",
-        justifyContent: "center",
         flex: 1,
+        padding: 20
     },
     keyParamContainer: {
         flex: 1,
-        alignItems: "center",
+        bottom: -40
     },
     keyParamSectionTitle: {
-        padding: 10,
+        padding: 5,
         fontSize: 18,
         color: "#fff",
-    },
-    scrollViewContainer: {
-        flex: 1
+        alignSelf: 'center'
     },
     keyParamRow: {
-        flex: 1,
         flexDirection: 'row',
-        //backgroundColor: 'purple',
-        justifyContent: 'space-evenly',
-        alignItems: 'center'
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     keyParamNameText: {
         fontSize: 18,
         color: "#fff",
-
+        paddingLeft: 30
     },
     dropdownContainer: {
         flex: 1,
@@ -234,16 +225,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#eaecf5'
     },
-    enumDropdown: {
-        width: '100%',
-        height: '5%',
-        bottom: 100
-    },
     textInput: {
-        margin: 15,
+        margin: 5,
+        marginRight: 30,
         width: 200,
         height: 30,
         borderRadius: 10,
+        textAlign: 'center'
     },
     submitButton: {
         width: 200,
@@ -251,32 +239,28 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#2e7cf2",
-        margin: 10,
+
     },
     buttonContainer: {
         justifyContent: "center",
         alignItems: "center",
+        margin: 40,
     },
     submitButtonText: {
         fontSize: 18,
         color: "#fff",
     },
-    separator: {
-        marginVertical: 5,
-        height: 1,
-        width: "80%",
-    },
     dropdown1BtnStyle: {
         width: 200,
         height: 34,
+        marginLeft: 30,
         backgroundColor: '#F6F6F6',
         borderRadius: 5,
         borderColor: '#2e7cf2',
         borderWidth: 1,
-        margin: 10
+        margin: 10,
     },
-    dropdown1BtnTxtStyle: { color: '#747474', textAlign: 'center', fontSize: 14 },
+    dropdown1BtnTxtStyle: { color: 'black', textAlign: 'center', fontSize: 14 },
     dropdown1DropdownStyle: { borderRadius: 10 },
     dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5', height: 40 },
     dropdown1RowTxtStyle: { color: '#444', textAlign: 'center', fontSize: 14 },
