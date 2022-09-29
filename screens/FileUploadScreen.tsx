@@ -3,9 +3,10 @@ import {
   SafeAreaView,
   StyleSheet,
   useColorScheme,
+  Text, View
 } from "react-native";
-import { Text, View } from "../components/Themed";
 import ImageComponent from "../components/FileUploadView/ImageComponent";
+import Separator from "../components/Separator";
 
 export default function FileUploadScreen({ route }: any) {
   const { displayName, description } = route.params;
@@ -23,7 +24,7 @@ export default function FileUploadScreen({ route }: any) {
       <View style={[styles.titleContainer, { backgroundColor: containerBackgroundColor }]}>
         <Text style={styles.title}>Container name: {displayName}</Text>
         {/*<Text style={styles.title}>Description: {description}</Text>*/}
-        <View style={styles.separator} lightColor="black" darkColor="grey" />
+        <Separator/>
       </View>
       <ImageComponent route={route} ></ImageComponent>
     </SafeAreaView>
@@ -41,12 +42,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 750
+    bottom: 750,
 
   },
   title: {
     fontSize: 20,
     paddingTop: 10,
+    paddingBottom: 20
   },
   separator: {
     height: 1,

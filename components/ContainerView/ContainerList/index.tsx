@@ -3,6 +3,7 @@ import React from 'react'
 import ContainerCard from '../ContainerCard'
 import { useRecoilValue } from 'recoil';
 import { containerListSelector } from '../../../stores/Atoms';
+import SearchBar from '../SearchBar';
 
 const ContainerList = () => {
     const themeMode = useColorScheme();
@@ -12,6 +13,7 @@ const ContainerList = () => {
     if (containers) {
         return (
             <View style={[styles.listContainer, { backgroundColor: listContainerBgC }]}>
+                <SearchBar />
                 <FlatList
                     data={containers}
                     renderItem={({ item }) => <ContainerCard container={item} />}
@@ -27,7 +29,6 @@ export default ContainerList
 
 const styles = StyleSheet.create({
     listContainer: {
-        width: '100%',
-
+       flex:1
     },
 })

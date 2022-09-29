@@ -5,6 +5,7 @@ import ContainerList from '../components/ContainerView/ContainerList';
 import SearchBar from '../components/ContainerView/SearchBar';
 import { useRecoilValue } from 'recoil';
 import { isLoadingAtom } from '../stores/Atoms';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScreen'>) {
@@ -14,7 +15,6 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScree
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: containerBgC }]}>
-      <SearchBar />
       <ContainerList />
     </SafeAreaView>
   )
