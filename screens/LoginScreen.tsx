@@ -2,10 +2,10 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, useColorScheme, Image, Pressable, Text, View } from 'react-native';
 import { useSetRecoilState } from 'recoil';
-import LoginIllustration from '../components/LoginView/LoginIllusatration';
-import LoginPageFooterIcon from '../components/LoginView/LoginPageFooterIcon';
-import LoginPageHeader from '../components/LoginView/LoginPageHeader';
 import { useAuth } from '../contexts/Auth';
+import LoginIllustraion from '../modules/Login/LoginIllusatration'
+import LoginPageFooterIcon from '../modules/Login/LoginPageFooterIcon';
+import LoginPageHeader from '../modules/Login/LoginPageHeader';
 import { isLoadingAtom } from '../stores/Atoms';
 
 export default function LoginScreen() {
@@ -39,7 +39,7 @@ export default function LoginScreen() {
           style={styles.ilustration}
         /> */}
 
-        <LoginIllustration></LoginIllustration>
+        <LoginIllustraion></LoginIllustraion>
         <View style={[styles.loginButtonContainer, { backgroundColor: loginButtonContainerBgC }]}
         >
           <Pressable style={styles.loginButton} onPress={() => { login() }}>
@@ -90,15 +90,15 @@ const styles = StyleSheet.create({
     bottom: -40,
   },
   loginButton: {
-    width: '50%',
-    height: '80%',
+    width: '80%',
+    height: '100%',
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#2e7cf2'
   },
   loginButtonText: {
-    fontSize: 15,
+    fontSize: 20,
     fontFamily: 'Muli-Bold',
     color: '#fff',
   },

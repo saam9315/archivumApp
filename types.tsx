@@ -17,8 +17,9 @@ export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Login: undefined;
   Home: undefined;
-  Modal: undefined;
-  NotFound: undefined;
+  FileUploadScreen: ContainerProps | undefined;
+  KeyParameterInputScreen: Container | undefined;
+  EntitiesTableScreen: Container | undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -50,13 +51,19 @@ export interface Group {
   owners?: User[]
 }
 
-export interface ContainerParameter {
+export interface KeyParameter {
   name: string;
   type: string;
   values?: string[];
 }
 
-export default interface Container {
+export interface ContainerParameters {
+  containerParameters: KeyParameter[];
+}
+
+
+
+export interface Container {
   apiKey?: string;
   archivalDuration?: string; // pattern: ^P(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$
   connectors?: ContainerConnector[];
@@ -107,4 +114,12 @@ export type PermissionType = 'READ' | 'WRITE'
 export interface Restriction {
   condition: Condition | {};
   permissions: PermissionType[];
+}
+
+export interface file {
+  cancelled?: boolean;
+  height?: number;
+  type?: string;
+  uri: string;
+  width?: number;
 }

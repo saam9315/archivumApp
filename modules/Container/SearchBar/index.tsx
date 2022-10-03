@@ -35,17 +35,15 @@ const styles = StyleSheet.create({
     searchBarContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: '97.7%',
+        width: '100%',
         height: 50,
         alignSelf: 'center',
         paddingBottom: 5,
         paddingTop: 5,
-        resizeMode: 'contain',
     },
     SearchBar: {
-        width: '97.7%',
-        resizeMode: 'contain',
+        width: '96%',
         borderRadius: 50,
-        height: 45,
+        height: 40,
     },
 })
