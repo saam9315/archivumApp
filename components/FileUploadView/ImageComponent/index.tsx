@@ -4,13 +4,15 @@ import * as ImagePicker from "expo-image-picker";
 import { useSetRecoilState } from "recoil";
 import { selectedFileAtom } from "../../../stores/Atoms";
 import { useNavigation } from "@react-navigation/native";
+import { Container, ContainerProps, file } from "../../../types";
 
-export default function ImageComponent({ route }: any) {
+export default function ImageComponent(container: any) {
   // The path of the picked image
   const [pickedImagePath, setPickedImagePath] = useState("");
-  const setFileName = useSetRecoilState<string>(selectedFileAtom);
+  const setFile = useSetRecoilState<file>(selectedFileAtom);
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
 
   // This function is triggered when the "Select an image" button pressed
   const showImagePicker = async () => {
@@ -25,13 +27,11 @@ export default function ImageComponent({ route }: any) {
 
     const result = await ImagePicker.launchImageLibraryAsync();
 
-    // Explore the result
-    console.log(result);
-
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
-      setFileName(result.uri.substring(result.uri.lastIndexOf("/") + 1));
-      console.log(result.uri);
+      setFile(result);
+      setIsButtonDisabled(false);
+      //console.log(result);
     }
   };
 
@@ -46,14 +46,14 @@ export default function ImageComponent({ route }: any) {
     }
 
     const result = await ImagePicker.launchCameraAsync();
-
     // Explore the result
-    console.log(result);
+    //console.log(result);
 
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
-      setFileName(result.uri.substring(result.uri.lastIndexOf("/") + 1));
-      console.log(result.uri);
+      setFile(result)
+      setIsButtonDisabled(false);
+      //console.log(result.uri);
     }
   };
 
@@ -75,12 +75,13 @@ export default function ImageComponent({ route }: any) {
         ]}
       >
         <Pressable
-          style={styles.nextButton}
+          style={[styles.nextButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]}
           onPress={() =>
-            navigation.navigate("KeyParameterInputScreen", route.params)
+            navigation.navigate("KeyParameterInputScreen", container)
           }
+          disabled={isButtonDisabled}
         >
-          <Text style={styles.nextButtonText}>Next</Text>
+          <Text style={[styles.nextButtonText, { color: isButtonDisabled ? 'lightgrey' : '#fff' },]}>Next</Text>
         </Pressable>
       </View>
     </View>
@@ -91,17 +92,14 @@ export default function ImageComponent({ route }: any) {
 const styles = StyleSheet.create({
   screen: {
     justifyContent: "center",
-    alignItems: "center",
-    //backgroundColor: 'red',
+    alignItems: "center"
   },
   buttonContainer: {
-    //backgroundColor: 'green',
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
   imageContainer: {
-    //backgroundColor: "lightblue",
     bottom: 100,
   },
   image: {
@@ -115,7 +113,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#2e7cf2",
     margin: 10,
   },
   nextButtonContainer: {
@@ -124,6 +121,5 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     fontSize: 18,
-    color: "#fff",
   },
 });

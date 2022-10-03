@@ -3,14 +3,13 @@ import React from 'react'
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Colors from '../../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
-import { ContainerProps } from '../../../types';
+import { Container } from '../../../types';
 
 
-const ContainerCardFooterIcons = (container: ContainerProps) => {
+const ContainerCardFooterIcons = (container: Container) => {
     const navigation = useNavigation();
     const onPress = () => {
-        console.log('key params are: ', container.container.requiredParameters)
-        navigation.navigate('FileUploadScreen', container.container)
+        navigation.navigate('FileUploadScreen', container)
     }
     const colorScheme = useColorScheme();
     const backgroundColor = colorScheme === 'dark' ? '#161f28' : 'white';

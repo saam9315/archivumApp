@@ -1,20 +1,18 @@
 import React from 'react';
-import { KeyboardAvoidingView, Pressable, SafeAreaView, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import KeyParameterForm from '../components/FileUploadView/KeyParameterForm';
-
-import { Text, View } from '../components/Themed';
-import { KeyParameter, RootStackScreenProps } from '../types';
+import { Container } from '../types';
 
 export default function KeyParameterInputScreen({ route }: any) {
-  const containerParameters: KeyParameter[] = route.params.requiredParameters;
-  const { displayName } = route.params;
+  const container: Container = route.params.container;
+  //console.log(container)
   const colorScheme = useColorScheme();
   const containerBackgroundColor =
     colorScheme === "dark" ? "#161f28" : "#eaecf5";
 
   return (
-    <SafeAreaView style={[styles.mainContainer, { backgroundColor: colorScheme === "dark" ? "#161f28" : '#eaecf5' }]}>
-      <KeyParameterForm containerParameters={containerParameters} />
+    <SafeAreaView style={[styles.mainContainer, { backgroundColor: containerBackgroundColor }]}>
+      <KeyParameterForm container={container} />
     </SafeAreaView>
 
 

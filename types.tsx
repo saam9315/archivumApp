@@ -18,7 +18,7 @@ export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   FileUploadScreen: Container | undefined;
-  KeyParameterInputScreen:  Container | undefined;
+  KeyParameterInputScreen: Container | undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -113,4 +113,12 @@ export type PermissionType = 'READ' | 'WRITE'
 export interface Restriction {
   condition: Condition | {};
   permissions: PermissionType[];
+}
+
+export interface file {
+  cancelled?: boolean;
+  height?: number;
+  type?: string;
+  uri: string;
+  width?: number;
 }

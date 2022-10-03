@@ -11,38 +11,95 @@ import {
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { Formik } from "formik";
-import { KeyParameter } from "../../../types";
-import { useRecoilState } from "recoil";
-import { selectedFileAtom } from "../../../stores/Atoms";
+import { Container, ContainerProps, KeyParameter } from "../../../types";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { selectedFileAtom, userTokenAtom } from "../../../stores/Atoms";
 import SelectDropdown from 'react-native-select-dropdown'
 import { FontAwesome } from "@expo/vector-icons";
 import Separator from "../../Separator";
+import * as yup from 'yup';
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
-const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
+const KeyParameterForm = (container: ContainerProps) => {
     const colorScheme = useColorScheme();
-    const [fileName, setFileName] = useRecoilState(selectedFileAtom);
-    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const currContainer: Container = container.container
+    const containerParameters: Array<KeyParameter> | any = currContainer.requiredParameters
+    const file = useRecoilValue(selectedFileAtom);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1)
+    const authData = useRecoilValue(userTokenAtom);
+    const accessToken = authData?.accessToken;
+    const navigation = useNavigation();
 
 
-    //console.log(containerParameters)
-    //console.log(containerParameters.flatMap((item: { name: String; }): String => item.name));
-    //console.log(containerParameters.reduce((acc: any, cur: { name: any; value: any; }) => ({ ...acc, [cur.name]: '' }), {}));
+    let initialFormValues = containerParameters.reduce(
+        (acc: any, cur: { name: any; value: any }) => ({
+            ...acc,
+            [cur.name]: "",
+        }),
+        { file: fileName }
+    )
+
+    const uploadFile = async (values: any) => {
+
+        console.log(values)
+
+        var bodyFormData = new FormData();
+
+        bodyFormData.append('image', file.uri);
+
+        console.log(bodyFormData)
+
+        let asArray = Object.entries(values)
+
+        let filteredParams = asArray.filter(([key, value]) => {
+            return key !== "file" && value !== fileName
+        })
+
+        let asObj = Object.fromEntries(filteredParams)
+
+        var queryString = Object.keys(asObj).map(key => key + '=' + asObj[key]).join('&');
+
+        if (accessToken) {
+            const headerConfig = {
+                headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "multipart/form-data", 'X-Filename': `${values.file}` },
+            };
+            const entityPostUrl =
+                `https://dev.archivum.mblb.net/api/entities/${currContainer.name}?${queryString}`;
+
+            const response = await axios.post(entityPostUrl, { body: bodyFormData }, headerConfig);
+
+            if (response) {
+                return response.data;
+            }
+        } else {
+            return "";
+        }
+    }
+
+    const validationSchema = yup.array().of(
+        yup.object().shape({
+
+        })
+    )
+
 
     return (
         <ScrollView style={[styles.mainContainer]}>
             <KeyboardAvoidingView behavior='position'>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <Formik
-                        initialValues={containerParameters.reduce(
-                            (acc: any, cur: { name: any; value: any }) => ({
-                                ...acc,
-                                [cur.name]: "",
-                            }),
-                            {}
-                        )}
+                        initialValues={initialFormValues}
+                        //validationSchema={validationSchema}
                         onSubmit={(values, actions) => {
+                            //console.log(values)
+                            //setFile(values);
+                            //const res = uploadFile(values)
+                            //console.log(res)
+                            uploadFile(values)
                             actions.resetForm();
-                            console.log(values)
+
                         }}
                     >
                         {(props) => (
@@ -78,15 +135,15 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                                         outlineColor="#2e7ef2"
                                         activeOutlineColor="#2e7ef2"
                                         activeUnderlineColor="#2e7ef2"
-                                        defaultValue={fileName}
-                                        onChangeText={setFileName}
+                                        //defaultValue={fileName}
+                                        onChangeText={props.handleChange('file')}
 
                                         theme={{
                                             colors: {
                                                 text: colorScheme === "dark" ? "black" : "black",
                                             },
                                         }}
-                                        value={fileName}
+                                        value={props.values.file}
                                     />
                                 </View>
 
@@ -101,7 +158,7 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                                     Key Parameters
                                 </Text>
 
-                                {containerParameters.map(function (item: any, index: number) {
+                                {containerParameters?.map(function (item: any, index: number) {
                                     let itemName = item.name;
                                     return (
                                         <View
@@ -148,6 +205,9 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                                                     dropdownStyle={styles.dropdown1DropdownStyle}
                                                     rowStyle={styles.dropdown1RowStyle}
                                                     rowTextStyle={styles.dropdown1RowTxtStyle}
+                                                    {...props.errors.itemName && props.touched.itemName &&
+                                                    <Text>{props.errors.title}</Text>
+                                                    }
                                                 />
                                                 :
                                                 <TextInput
@@ -164,6 +224,10 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                                                     }}
                                                     placeholder={item.type}
                                                     value={props.values.itemName}
+
+                                                    {...props.errors.itemName && props.touched.itemName &&
+                                                    <Text>{props.errors.title}</Text>
+                                                    }
                                                 />
                                             }
 
@@ -180,6 +244,17 @@ const KeyParameterForm = ({ containerParameters }: KeyParameter[] | any) => {
                                     ]}
                                 >
                                     <Button style={[styles.submitButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]} color='white' onPress={props.handleSubmit} disabled={isButtonDisabled}> Submit</Button>
+                                </View>
+                                <View
+                                    style={[
+                                        styles.buttonContainer,
+                                        {
+                                            backgroundColor:
+                                                colorScheme === "dark" ? "#161f28" : "#eaecf5",
+                                        },
+                                    ]}
+                                >
+                                    <Button style={[styles.submitButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]} color='white' onPress={() => { navigation.navigate('Root') }} disabled={isButtonDisabled}> Go back</Button>
                                 </View>
 
                             </View>

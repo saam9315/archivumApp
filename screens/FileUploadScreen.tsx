@@ -7,9 +7,11 @@ import {
 } from "react-native";
 import ImageComponent from "../components/FileUploadView/ImageComponent";
 import Separator from "../components/Separator";
+import { Container } from "../types";
 
 export default function FileUploadScreen({ route }: any) {
-  const { displayName, description } = route.params;
+  const container: Container = route.params.container;
+  console.log(container)
   const colorScheme = useColorScheme();
   const containerBackgroundColor =
     colorScheme === "dark" ? "#161f28" : "#eaecf5";
@@ -22,11 +24,11 @@ export default function FileUploadScreen({ route }: any) {
       ]}
     >
       <View style={[styles.titleContainer, { backgroundColor: containerBackgroundColor }]}>
-        <Text style={styles.title}>Container name: {displayName}</Text>
+        <Text style={styles.title}>Container name: {container.displayName}</Text>
         {/*<Text style={styles.title}>Description: {description}</Text>*/}
-        <Separator/>
+        <Separator />
       </View>
-      <ImageComponent route={route} ></ImageComponent>
+      <ImageComponent container={container} ></ImageComponent>
     </SafeAreaView>
   );
 }

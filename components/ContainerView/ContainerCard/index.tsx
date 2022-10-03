@@ -65,5 +65,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Muli-Regular',
         paddingLeft: 10,
         paddingRight: 10,
+        paddingBottom: 10
     },
 });

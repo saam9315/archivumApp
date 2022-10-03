@@ -1,14 +1,11 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, useColorScheme, View } from 'react-native';
-import { RootTabScreenProps } from '../types';
+import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import ContainerList from '../components/ContainerView/ContainerList';
-import SearchBar from '../components/ContainerView/SearchBar';
 import { useRecoilValue } from 'recoil';
 import { isLoadingAtom } from '../stores/Atoms';
-import { ScrollView } from 'react-native-gesture-handler';
 
 
-export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScreen'>) {
+export default function HomeScreen() {
   const themeMode = useColorScheme();
   const containerBgC = themeMode === 'dark' ? "#1d2a38" : "#eaecf5";
   const isLoading = useRecoilValue(isLoadingAtom);
