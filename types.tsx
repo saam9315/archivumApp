@@ -17,8 +17,9 @@ export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Login: undefined;
   Home: undefined;
-  FileUploadScreen: Container | undefined;
+  FileUploadScreen: ContainerProps | undefined;
   KeyParameterInputScreen: Container | undefined;
+  EntitiesTableScreen: Container | undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

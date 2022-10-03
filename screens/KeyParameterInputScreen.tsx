@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
-import KeyParameterForm from '../components/FileUploadView/KeyParameterForm';
+import KeyParameterForm from '../modules/FileUpload/KeyParameterForm';
 import { Container } from '../types';
 
 export default function KeyParameterInputScreen({ route }: any) {
@@ -17,12 +17,6 @@ export default function KeyParameterInputScreen({ route }: any) {
 
   )
 }
-/*<View style={styles.container}>
-<Text style={styles.title}>This screen doesn't exist.</Text>
-<TouchableOpacity onPress={() => navigation.replace('Root')} style={styles.link}>
-  <Text style={styles.linkText}>Go to home screen!</Text>
-</TouchableOpacity>
-</View>*/
 
 const styles = StyleSheet.create({
   mainContainer: {

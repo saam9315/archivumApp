@@ -5,8 +5,9 @@ import {
   useColorScheme,
   Text, View
 } from "react-native";
-import ImageComponent from "../components/FileUploadView/ImageComponent";
 import Separator from "../components/Separator";
+import ImageComponent from "../modules/FileUpload/ImageComponent";
+
 import { Container } from "../types";
 
 export default function FileUploadScreen({ route }: any) {

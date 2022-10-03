@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
-import ContainerList from '../components/ContainerView/ContainerList';
+import ContainerList from '../modules/Container/ContainerList';
 import { useRecoilValue } from 'recoil';
 import { isLoadingAtom } from '../stores/Atoms';
 

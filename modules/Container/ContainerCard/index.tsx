@@ -2,6 +2,8 @@ import { Alert, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-
 import React from 'react'
 import { ContainerProps } from '../../../types'
 import ContainerCardFooterIcons from '../ContainerCardFooterIcons'
+import { useNavigation } from '@react-navigation/native'
+
 
 
 const ContainerCard = ({ container }: ContainerProps) => {
@@ -9,10 +11,11 @@ const ContainerCard = ({ container }: ContainerProps) => {
     const containerCardBgC = themeMode === 'dark' ? "#1d2a38" : "#eaecf5";
     const containerNameTextColor = themeMode === 'dark' ? "#15e8dd" : "#2e7ef2"
     const containerDescriptionTextColor = themeMode === 'dark' ? "lightgrey" : "#748590"
+    const navigation = useNavigation();
 
     return (
         <Pressable
-            onPress={() => { Alert.alert('Container Card Pressed! Display name: ', container.displayName) }}
+            onPress={() => { navigation.navigate('EntitiesTableScreen') }}
             style={[
                 styles.containerCard,
                 {

@@ -3,10 +3,10 @@ import React from 'react'
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Colors from '../../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
-import { Container } from '../../../types';
+import { Container, ContainerProps } from '../../../types';
 
 
-const ContainerCardFooterIcons = (container: Container) => {
+const ContainerCardFooterIcons = (container: ContainerProps) => {
     const navigation = useNavigation();
     const onPress = () => {
         navigation.navigate('FileUploadScreen', container)

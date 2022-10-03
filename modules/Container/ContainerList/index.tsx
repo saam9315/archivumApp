@@ -29,6 +29,6 @@ export default ContainerList
 
 const styles = StyleSheet.create({
     listContainer: {
-       flex:1
+        flex: 1
     },
 })
