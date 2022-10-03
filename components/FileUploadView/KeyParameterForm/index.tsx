@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { Formik } from "formik";
 import { Container, ContainerProps, KeyParameter } from "../../../types";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { selectedFileAtom, userTokenAtom } from "../../../stores/Atoms";
 import SelectDropdown from 'react-native-select-dropdown'
 import { FontAwesome } from "@expo/vector-icons";
@@ -20,6 +20,7 @@ import Separator from "../../Separator";
 import * as yup from 'yup';
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import Toast from 'react-native-root-toast';
 
 const KeyParameterForm = (container: ContainerProps) => {
     const colorScheme = useColorScheme();
@@ -43,13 +44,13 @@ const KeyParameterForm = (container: ContainerProps) => {
 
     const uploadFile = async (values: any) => {
 
-        console.log(values)
+        //console.log(values)
 
         var bodyFormData = new FormData();
 
         bodyFormData.append('image', file.uri);
 
-        console.log(bodyFormData)
+        //console.log(bodyFormData)
 
         let asArray = Object.entries(values)
 
@@ -254,7 +255,12 @@ const KeyParameterForm = (container: ContainerProps) => {
                                         },
                                     ]}
                                 >
-                                    <Button style={[styles.submitButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]} color='white' onPress={() => { navigation.navigate('Root') }} disabled={isButtonDisabled}> Go back</Button>
+                                    {/*<Button style={[styles.submitButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]} color='white' onPress={() => { navigation.navigate('Root') }} disabled={isButtonDisabled}> Go back</Button>*/}
+                                    <Button style={[styles.submitButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]} color='white' onPress={() => {
+                                        Toast.show('Request failed to send.', {
+                                            duration: Toast.durations.LONG,
+                                        });
+                                    }} disabled={isButtonDisabled}> Go back</Button>
                                 </View>
 
                             </View>

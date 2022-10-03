@@ -11,7 +11,6 @@ import { Container } from "../types";
 
 export default function FileUploadScreen({ route }: any) {
   const container: Container = route.params.container;
-  console.log(container)
   const colorScheme = useColorScheme();
   const containerBackgroundColor =
     colorScheme === "dark" ? "#161f28" : "#eaecf5";

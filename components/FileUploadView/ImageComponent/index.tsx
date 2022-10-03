@@ -31,7 +31,6 @@ export default function ImageComponent(container: any) {
       setPickedImagePath(result.uri);
       setFile(result);
       setIsButtonDisabled(false);
-      //console.log(result);
     }
   };
 
@@ -53,7 +52,6 @@ export default function ImageComponent(container: any) {
       setPickedImagePath(result.uri);
       setFile(result)
       setIsButtonDisabled(false);
-      //console.log(result.uri);
     }
   };
 
