@@ -25,7 +25,7 @@ export default function FileUploadScreen({ route }: any) {
     >
       <View style={[styles.titleContainer, { backgroundColor: containerBackgroundColor }]}>
         <Text style={styles.title}>Container name: {container.displayName}</Text>
-        {/*<Text style={styles.title}>Description: {description}</Text>*/}
+        {/*<Text style={styles.title}>Description: {container.description}</Text>*/}
         <Separator />
       </View>
       <ImageComponent container={container} ></ImageComponent>
@@ -42,20 +42,14 @@ const styles = StyleSheet.create({
   titleContainer: {
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
     position: 'absolute',
-    bottom: 750,
+    bottom: 730,
 
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     paddingTop: 10,
-    paddingBottom: 20
-  },
-  separator: {
-    height: 1,
-    width: "75%",
-    marginTop: 20
-
+    fontFamily: 'Muli-Regular',
+    color: '#2e7ef2'
   },
 });
