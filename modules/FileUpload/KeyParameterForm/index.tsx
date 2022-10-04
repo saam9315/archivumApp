@@ -17,7 +17,7 @@ import { selectedFileAtom, userTokenAtom } from "../../../stores/Atoms";
 import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
 import * as yup from "yup";
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-root-toast";
 import Separator from "../../../components/Separator";
@@ -43,48 +43,8 @@ const KeyParameterForm = (container: ContainerProps) => {
     );
 
     const uploadFile = async (values: any) => {
-        //console.log(values)
 
-        var bodyFormData = new FormData();
 
-        bodyFormData.append("image", file.uri);
-
-        //console.log(bodyFormData)
-
-        let asArray = Object.entries(values);
-
-        let filteredParams = asArray.filter(([key, value]) => {
-            return key !== "file" && value !== fileName;
-        });
-
-        let asObj = Object.fromEntries(filteredParams);
-
-        var queryString = Object.keys(asObj)
-            .map((key) => key + "=" + asObj[key])
-            .join("&");
-
-        if (accessToken) {
-            const headerConfig = {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "multipart/form-data",
-                    "X-Filename": `${values.file}`,
-                },
-            };
-            const entityPostUrl = `https://dev.archivum.mblb.net/api/entities/${currContainer.name}?${queryString}`;
-
-            const response = await axios.post(
-                entityPostUrl,
-                { body: bodyFormData },
-                headerConfig
-            );
-
-            if (response) {
-                return response.data;
-            }
-        } else {
-            return "";
-        }
     };
 
     //const validationSchema = yup.array().of(yup.object().shape({}));
@@ -98,12 +58,71 @@ const KeyParameterForm = (container: ContainerProps) => {
                         //validationSchema={validationSchema}
                         onSubmit={async (values, actions) => {
 
-                            const response = await uploadFile(values);
-                            // Toast.show(response, {
-                            //     duration: Toast.durations.LONG,
-                            // });
-                            console.log(response)
-                            navigation.navigate('Home')
+                            var bodyFormData = new FormData();
+
+
+                            bodyFormData.append('image', file.uri);
+
+                            //console.log(bodyFormData)
+
+                            let asArray = Object.entries(values);
+
+                            let filteredParams = asArray.filter(([key, value]) => {
+                                return key !== "file" && value !== fileName;
+                            });
+
+                            let asObj = Object.fromEntries(filteredParams);
+
+                            var queryString = Object.keys(asObj)
+                                .map((key) => key + "=" + asObj[key])
+                                .join("&");
+
+                            //console.log(queryString)
+                            if (accessToken) {
+                                const headerConfig = {
+                                    headers: {
+                                        'Authorization': `Bearer ${accessToken}`,
+                                        'accept': 'application/json',
+                                        "X-Filename": `${values.file}`,
+                                        'Content-Type': `multipart/form-data`,
+                                    },
+                                };
+                                //console.log(headerConfig)
+                                const entityPostUrl = `https://dev.archivum.mblb.net/api/entities/${currContainer.name}?${queryString}`;
+                                //console.log(entityPostUrl)
+
+
+                                axios.post(entityPostUrl, { body: bodyFormData }, headerConfig)
+                                    .then((response: AxiosResponse) => {
+                                        console.log(response.data)
+                                        Toast.show('File uploaded successfuly!', {
+                                            duration: Toast.durations.LONG,
+                                        });
+                                        navigation.navigate('Root')
+                                    }
+                                    ).
+                                    catch((error: AxiosError) => {
+                                        if (error.response!.status === 400) {
+                                            Toast.show(""+ error.response?.data?.message, {
+                                                duration: Toast.durations.LONG,
+                                            });
+                                        } else {
+                                            // Handle else
+                                            Toast.show(""+ error.response?.data?.message, {
+                                                duration: Toast.durations.LONG
+                                            });
+                                        }
+                                        //console.log(error.message)
+                                    });
+
+
+                            } else {
+                                Toast.show('Unauthorised!', {
+                                    duration: Toast.durations.LONG,
+                                });
+                            
+                            }
+                            // navigation.navigate("Root");
                             actions.resetForm();
                         }}
                     >
@@ -276,21 +295,6 @@ const KeyParameterForm = (container: ContainerProps) => {
                                         },
                                     ]}
                                 >
-                                    {/*<Button style={[styles.submitButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]} color='white' onPress={() => { navigation.navigate('Root') }} disabled={isButtonDisabled}> Go back</Button>*/}
-                                    <Button
-                                        style={[
-                                            styles.submitButton,
-                                            {
-                                                backgroundColor: isButtonDisabled ? "grey" : "#2e7cf2",
-                                            },
-                                        ]}
-                                        color="white"
-                                        onPress={() => { }}
-                                        disabled={isButtonDisabled}
-                                    >
-                                        {" "}
-                                        Go back
-                                    </Button>
                                 </View>
                             </View>
                         )}
