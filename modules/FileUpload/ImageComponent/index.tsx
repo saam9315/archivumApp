@@ -63,13 +63,13 @@ export default function ImageComponent(container: any) {
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <Button onPress={showImagePicker} title="Select an existing image" />
-        <Button onPress={openCamera} title="Open camera" />
+        <Button onPress={showImagePicker} color={'#2e7ef2'} title="Select an existing image" />
+        <Button onPress={openCamera} color={'#2e7ef2'} title="Open camera" />
       </View>
       <View
         style={[
           styles.buttonContainer,
-          { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" },
+          { backgroundColor: colorScheme === "dark" ? "#161f28" : '#eaecf5' },
         ]}
       >
         <Pressable
@@ -89,16 +89,19 @@ export default function ImageComponent(container: any) {
 
 const styles = StyleSheet.create({
   screen: {
+    flex: 1,
+    width: '100%',
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonContainer: {
+    height: '10%',
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
   },
   imageContainer: {
-    bottom: 100,
+    height: '50%',
+    justifyContent: 'center',
   },
   image: {
     width: 400,
@@ -111,7 +114,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    margin: 10,
   },
   nextButtonContainer: {
     justifyContent: "center",
@@ -119,5 +121,6 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     fontSize: 18,
+    fontFamily: 'Muli-Regular'
   },
 });
