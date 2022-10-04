@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    paddingTop: 10,
+    paddingBottom: 15,
     fontFamily: 'Muli-Regular',
     color: '#2e7ef2'
   },
