@@ -26,6 +26,7 @@ export default function ImageComponent(container: any) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync();
+    //console.log(result)
 
     if (!result.cancelled) {
       setPickedImagePath(result.uri);

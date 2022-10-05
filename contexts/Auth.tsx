@@ -1,9 +1,9 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 //import { AuthData, authService } from '../services/authService';
-import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig, RevokeTokenRequestConfig, TokenRequestConfig, TokenResponse } from 'expo-auth-session';
+import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig, RevokeTokenRequestConfig, TokenResponse } from 'expo-auth-session';
 import { Alert } from 'react-native';
 import { isLoadingAtom, userTokenAtom } from '../stores/Atoms';
 import { useSetRecoilState } from 'recoil';
