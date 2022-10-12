@@ -1,16 +1,22 @@
-
-import React from 'react';
-import { StyleSheet, SafeAreaView, useColorScheme, Image, Pressable, Text, View } from 'react-native';
-import { useSetRecoilState } from 'recoil';
-import { useAuth } from '../contexts/Auth';
-import LoginIllustraion from '../modules/Login/LoginIllusatration'
-import LoginPageFooterIcon from '../modules/Login/LoginPageFooterIcon';
-import LoginPageHeader from '../modules/Login/LoginPageHeader';
-import { isLoadingAtom } from '../stores/Atoms';
+import React from "react";
+import {
+  StyleSheet,
+  SafeAreaView,
+  useColorScheme,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
+import { useSetRecoilState } from "recoil";
+import Colors from "../constants/Colors";
+import { useAuth } from "../contexts/Auth";
+import LoginIllustraion from "../modules/Login/LoginIllusatration";
+import LoginPageFooterIcon from "../modules/Login/LoginPageFooterIcon";
+import LoginPageHeader from "../modules/Login/LoginPageHeader";
+import { isLoadingAtom } from "../stores/Atoms";
 
 export default function LoginScreen() {
-
-  const setIsLoading = useSetRecoilState(isLoadingAtom)
+  const setIsLoading = useSetRecoilState(isLoadingAtom);
   const auth = useAuth();
 
   const login = async () => {
@@ -18,21 +24,30 @@ export default function LoginScreen() {
     await auth.signIn();
   };
 
-  const themeMode = useColorScheme();
-  const headerTextColor = themeMode === 'dark' ? "white" : "black";
-  const illustrationContainerBgC = themeMode === 'dark' ? "#161f28" : "white";
-  const loginButtonContainerBgC = themeMode === 'dark' ? "#161f28" : "white";
-  const mainContainerBgC = themeMode === 'dark' ? "#161f28" : "#eaecf5";
+  const colorScheme = useColorScheme();
+  const headerTextColor = colorScheme === "dark" ? "white" : "black";
+  const illustrationContainerBgC = colorScheme === "dark" ? "#161f28" : "white";
+  const loginButtonContainerBgC = colorScheme === "dark" ? "#161f28" : "white";
+  const mainContainerBgC =
+    colorScheme === "dark"
+      ? Colors.dark.containerBackground
+      : Colors.light.containerBackground;
 
   return (
-    <SafeAreaView style={[styles.mainContainer, { backgroundColor: mainContainerBgC }]}>
+    <SafeAreaView
+      style={[styles.mainContainer, { backgroundColor: mainContainerBgC }]}
+    >
       <LoginPageHeader />
 
-      <View style={[styles.ilustrationContainer, { backgroundColor: illustrationContainerBgC }]}
+      <View
+        style={[
+          styles.ilustrationContainer,
+          { backgroundColor: illustrationContainerBgC },
+        ]}
       >
-        <Text style={[styles.headerText, { color: headerTextColor }]}
-        >
-          Cool down your Hot data with Archivum</Text>
+        <Text style={[styles.headerText, { color: headerTextColor }]}>
+          Cool down your Hot data with Archivum
+        </Text>
         {/* <Image
           source={require('../assets/images/archivum-illustration.svg')}
           fadeDuration={0}
@@ -40,9 +55,18 @@ export default function LoginScreen() {
         /> */}
 
         <LoginIllustraion></LoginIllustraion>
-        <View style={[styles.loginButtonContainer, { backgroundColor: loginButtonContainerBgC }]}
+        <View
+          style={[
+            styles.loginButtonContainer,
+            { backgroundColor: loginButtonContainerBgC },
+          ]}
         >
-          <Pressable style={styles.loginButton} onPress={() => { login() }}>
+          <Pressable
+            style={styles.loginButton}
+            onPress={() => {
+              login();
+            }}
+          >
             <Text style={styles.loginButtonText}>Login with Azure</Text>
           </Pressable>
         </View>
@@ -55,51 +79,51 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "",
   },
   headerText: {
     fontSize: 35,
     marginLeft: 20,
     marginRight: 20,
-    fontWeight: '500',
+    fontWeight: "500",
     top: -40,
-    textAlign: 'center',
-    fontFamily: 'Muli-Bold',
+    textAlign: "center",
+    fontFamily: "Muli-Bold",
   },
   ilustrationContainer: {
-    width: '80%',
-    height: '60%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "80%",
+    height: "60%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   ilustration: {
     width: 300,
     height: 250,
     borderRadius: 50,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   loginButtonContainer: {
-    width: '100%',
-    height: '10%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    height: "10%",
+    justifyContent: "center",
+    alignItems: "center",
     bottom: -40,
   },
   loginButton: {
-    width: '80%',
-    height: '100%',
+    width: "80%",
+    height: "100%",
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2e7cf2'
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#2e7cf2",
   },
   loginButtonText: {
     fontSize: 20,
-    fontFamily: 'Muli-Bold',
-    color: '#fff',
+    fontFamily: "Muli-Bold",
+    color: "#fff",
   },
 });

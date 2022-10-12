@@ -1,10 +1,18 @@
-import { Button, StyleSheet, Image, View, useColorScheme, Pressable, Text } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Image,
+  View,
+  useColorScheme,
+  Pressable,
+  Text,
+} from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useSetRecoilState } from "recoil";
 import { selectedFileAtom } from "../../../stores/Atoms";
 import { useNavigation } from "@react-navigation/native";
-import { Container, ContainerProps, file } from "../../../types";
+import { file } from "../../../types";
 
 export default function ImageComponent(container: any) {
   // The path of the picked image
@@ -12,7 +20,7 @@ export default function ImageComponent(container: any) {
   const setFile = useSetRecoilState<file>(selectedFileAtom);
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   // This function is triggered when the "Select an image" button pressed
   const showImagePicker = async () => {
@@ -25,7 +33,11 @@ export default function ImageComponent(container: any) {
       return;
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync();
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      base64: true,
+      quality: 1,
+    });
     //console.log(result)
 
     if (!result.cancelled) {
@@ -45,13 +57,17 @@ export default function ImageComponent(container: any) {
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      base64: true,
+      quality: 1,
+    });
     // Explore the result
     //console.log(result);
 
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
-      setFile(result)
+      setFile(result);
       setIsButtonDisabled(false);
     }
   };
@@ -64,45 +80,58 @@ export default function ImageComponent(container: any) {
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <Button onPress={showImagePicker} color={'#2e7ef2'} title="Select an existing image" />
-        <Button onPress={openCamera} color={'#2e7ef2'} title="Open camera" />
+        <Button
+          onPress={showImagePicker}
+          color={"#2e7ef2"}
+          title="Select an existing image"
+        />
+        <Button onPress={openCamera} color={"#2e7ef2"} title="Open camera" />
       </View>
       <View
         style={[
           styles.buttonContainer,
-          { backgroundColor: colorScheme === "dark" ? "#161f28" : '#eaecf5' },
+          { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" },
         ]}
       >
         <Pressable
-          style={[styles.nextButton, { backgroundColor: isButtonDisabled ? 'grey' : '#2e7cf2' }]}
+          style={[
+            styles.nextButton,
+            { backgroundColor: isButtonDisabled ? "grey" : "#2e7cf2" },
+          ]}
           onPress={() =>
             navigation.navigate("KeyParameterInputScreen", container)
           }
           disabled={isButtonDisabled}
         >
-          <Text style={[styles.nextButtonText, { color: isButtonDisabled ? 'lightgrey' : '#fff' },]}>Next</Text>
+          <Text
+            style={[
+              styles.nextButtonText,
+              { color: isButtonDisabled ? "lightgrey" : "#fff" },
+            ]}
+          >
+            Next
+          </Text>
         </Pressable>
       </View>
     </View>
   );
-};
-
+}
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    width: '100%',
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
   buttonContainer: {
-    height: '10%',
+    height: "10%",
     flexDirection: "row",
     alignItems: "center",
   },
   imageContainer: {
-    height: '50%',
-    justifyContent: 'center',
+    height: "50%",
+    justifyContent: "center",
   },
   image: {
     width: 400,
@@ -122,6 +151,6 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     fontSize: 18,
-    fontFamily: 'Muli-Regular'
+    fontFamily: "Muli-Regular",
   },
 });

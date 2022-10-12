@@ -3,9 +3,11 @@ import {
   SafeAreaView,
   StyleSheet,
   useColorScheme,
-  Text, View
+  Text,
+  View,
 } from "react-native";
 import Separator from "../components/Separator";
+import Colors from "../constants/Colors";
 import ImageComponent from "../modules/FileUpload/ImageComponent";
 
 import { Container } from "../types";
@@ -14,21 +16,28 @@ export default function FileUploadScreen({ route }: any) {
   const container: Container = route.params.container;
   const colorScheme = useColorScheme();
   const containerBackgroundColor =
-    colorScheme === "dark" ? "#161f28" : "#eaecf5";
+    colorScheme === "dark"
+      ? Colors.dark.containerBackground
+      : Colors.light.containerBackground;
 
   return (
     <SafeAreaView
       style={[
         styles.mainContainer,
-        { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" },
+        { backgroundColor: containerBackgroundColor },
       ]}
     >
-      <View style={[styles.titleContainer, { backgroundColor: containerBackgroundColor }]}>
-        <Text style={styles.title}>Container name: {container.displayName}</Text>
+      <View
+        style={[
+          styles.titleContainer,
+          { backgroundColor: containerBackgroundColor },
+        ]}
+      >
+        <Text style={styles.title}>{container.displayName}</Text>
         {/*<Text style={styles.title}>Description: {container.description}</Text>*/}
         <Separator />
       </View>
-      <ImageComponent container={container} ></ImageComponent>
+      <ImageComponent container={container}></ImageComponent>
     </SafeAreaView>
   );
 }
@@ -40,16 +49,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   titleContainer: {
-    width: '100%',
-    alignItems: 'center',
-    position: 'absolute',
+    width: "100%",
+    alignItems: "center",
+    position: "absolute",
     bottom: 730,
-
   },
   title: {
     fontSize: 18,
     paddingBottom: 15,
-    fontFamily: 'Muli-Regular',
-    color: '#2e7ef2'
+    fontFamily: "Muli-Bold",
+    color: "#2e7ef2",
   },
 });

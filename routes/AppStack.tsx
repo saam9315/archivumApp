@@ -30,7 +30,7 @@ export const AppStack = () => {
           name="FileUploadScreen"
           component={FileUploadScreen}
           options={{
-            title: "Select a File ",
+            title: "Step 1: Select a File",
             headerStyle: { backgroundColor: headerBackgroundColor },
           }}
         />
@@ -38,7 +38,7 @@ export const AppStack = () => {
           name="KeyParameterInputScreen"
           component={KeyParameterInputScreen}
           options={{
-            title: "File Details",
+            title: "Step 2: File Details",
             headerStyle: { backgroundColor: headerBackgroundColor },
           }}
         />

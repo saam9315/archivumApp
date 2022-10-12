@@ -1,16 +1,16 @@
 import {
-    StyleSheet,
-    useColorScheme,
-    Text,
-    ScrollView,
-    TouchableWithoutFeedback,
-    Keyboard,
-    View,
-    KeyboardAvoidingView,
+  StyleSheet,
+  useColorScheme,
+  Text,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  View,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useState } from "react";
-import { Button, TextInput } from "react-native-paper";
-import { Formik } from "formik";
+import { Button, Paragraph, TextInput } from "react-native-paper";
+import { Formik, yupToFormErrors } from "formik";
 import { Container, ContainerProps, KeyParameter } from "../../../types";
 import { useRecoilValue } from "recoil";
 import { selectedFileAtom, userTokenAtom } from "../../../stores/Atoms";
@@ -20,353 +20,360 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-root-toast";
 import Separator from "../../../components/Separator";
-import { AuthData, useAuth } from "../../../contexts/Auth";
+import { useAuth } from "../../../contexts/Auth";
 import { TokenResponse } from "expo-auth-session";
+import * as Yup from "yup";
 
 const KeyParameterForm = (container: ContainerProps) => {
-    const colorScheme = useColorScheme();
-    const currContainer: Container = container.container;
-    const containerParameters: Array<KeyParameter> | any =
-        currContainer.requiredParameters;
-    const file = useRecoilValue(selectedFileAtom);
-    const userToken = useRecoilValue<AuthData | undefined>(userTokenAtom);
-    if(userToken)
-    var userAccessToken = new TokenResponse(userToken);
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-    let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1);
-    const navigation = useNavigation();
-    let auth = useAuth();
+  const colorScheme = useColorScheme();
+  const currContainer: Container = container.container;
+  const containerParameters: Array<KeyParameter> | any =
+    currContainer.requiredParameters;
+  const file = useRecoilValue(selectedFileAtom);
+  const userToken = useRecoilValue(userTokenAtom);
+  if (userToken) var userAccessToken = new TokenResponse(userToken);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-    let initialFormValues = containerParameters.reduce(
-        (acc: any, cur: { name: any; value: any }) => ({
-            ...acc,
-            [cur.name]: "",
-        }),
-        { file: fileName }
-    );
+  let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1);
+  const navigation = useNavigation();
+  let auth = useAuth();
 
-    //const validationSchema = yup.array().of(yup.object().shape({}));
+  let initialFormValues = containerParameters.reduce(
+    (acc: any, cur: { name: any; value: any }) => ({
+      ...acc,
+      [cur.name]: "",
+    }),
+    { file: fileName }
+  );
 
-    return (
-        <ScrollView style={[styles.mainContainer]}>
-            <KeyboardAvoidingView behavior="position">
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <Formik
-                        initialValues={initialFormValues}
-                        //validationSchema={validationSchema}
-                        onSubmit={async (values, actions) => {
-                            var bodyFormData = new FormData();
+  //const validationSchema = yup.array().of(yup.object().shape({}));
 
-                            bodyFormData.append('file', file.uri);
+  return (
+    <ScrollView style={[styles.mainContainer]}>
+      <KeyboardAvoidingView behavior="position">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Formik
+            initialValues={initialFormValues}
+            onSubmit={async (values, actions) => {
+              var bodyFormData = new FormData();
 
-                            let asArray = Object.entries(values);
+              if (file.base64) bodyFormData.append("file", file.uri);
 
-                            let filteredParams = asArray.filter(([key, value]) => {
-                                return key !== "file" && value !== fileName;
-                            });
+              console.log(bodyFormData);
 
-                            let asObj = Object.fromEntries(filteredParams);
+              let asArray = Object.entries(values);
 
-                            var queryString = Object.keys(asObj)
-                                .map((key) => key + "=" + asObj[key])
-                                .join("&");
+              let filteredParams = asArray.filter(([key, value]) => {
+                return key !== "file" && value !== fileName;
+              });
 
-                            //console.log(queryString);
-                            //console.log(bodyFormData)
+              let asObj = Object.fromEntries(filteredParams);
 
-                            if (!userAccessToken.shouldRefresh()) {
-                                const headerConfig = {
-                                    headers: {
-                                        "Authorization": `Bearer ${userAccessToken.accessToken}`,
-                                        "accept": "application/json",
-                                        "X-Filename": `${values.file}`,
-                                        "Content-Type": `multipart/form-data`,
-                                    },
+              var queryString = Object.keys(asObj)
+                .map((key) => key + "=" + asObj[key])
+                .join("&");
 
-                                };
-                                //console.log(headerConfig)
-                                const entityPostUrl = `https://dev.archivum.mblb.net/api/entities/${currContainer.name}?${queryString}`;
-                                console.log(entityPostUrl);
+              //console.log(queryString);
+              //console.log(bodyFormData)
 
-                                axios
-                                    .post(entityPostUrl, {body: bodyFormData}, headerConfig)
-                                    .then((response: AxiosResponse) => {
-                                        console.log(response.data);
-                                        Toast.show("File uploaded successfuly!", {
-                                            duration: Toast.durations.LONG,
-                                            backgroundColor: "green",
-                                        });
-                                        actions.resetForm();
-                                        navigation.navigate("Root");
-                                    })
-                                    .catch((error: AxiosError) => {
-                                        console.log(error.response?.data)
-                                        Toast.show("" + error.response?.data.message, {
-                                            duration: Toast.durations.LONG,
-                                            backgroundColor: "red",
-                                        });
-                                        //console.log(error.message)
-                                    });
-                            } else {
-                                Toast.show("Unauthorised!", {
-                                    duration: Toast.durations.LONG,
-                                    backgroundColor: "red",
-                                });
-                                auth.signOut();
-                            }
-                        }}
+              if (!userAccessToken.shouldRefresh()) {
+                //console.log(headerConfig)
+                const entityPostUrl = `https://dev.archivum.mblb.net/api/entities/${currContainer.name}?${queryString}`;
+                //console.log(entityPostUrl);
+
+                let requestConfig = {
+                  method: "POST",
+                  url: entityPostUrl,
+                  headers: {
+                    "Authorization": `Bearer ${userAccessToken.accessToken}`,
+                    "accept": "application/json",
+                    "Content-Type": `multipart/form-data`,
+                    "X-Filename": `${values.file}`,
+                  },
+                  body: bodyFormData,
+                };
+
+                axios(requestConfig)
+                  .then((response: AxiosResponse) => {
+                    console.log(response.data);
+                    Toast.show("File uploaded successfuly!", {
+                      duration: Toast.durations.LONG,
+                      backgroundColor: "green",
+                    });
+                    actions.resetForm();
+                    navigation.navigate("Root");
+                  })
+                  .catch((error: AxiosError) => {
+                    let errorData: any = error.response?.data;
+                    Toast.show("" + errorData.message, {
+                      duration: Toast.durations.LONG,
+                      backgroundColor: "red",
+                    });
+                    //console.log(error.message)
+                  });
+              } else {
+                Toast.show("Unauthorised!", {
+                  duration: Toast.durations.LONG,
+                  backgroundColor: "red",
+                });
+                auth.signOut();
+              }
+            }}
+            // validationSchema={Yup.object(containerParameters.map((param:KeyParameter)=>{
+            //   param.name: Yup.string().required(`${param.name} required`);
+            // }))}
+          >
+            {(props) => (
+              <View
+                style={[
+                  styles.keyParamContainer,
+                  {
+                    backgroundColor:
+                      colorScheme === "dark" ? "#161f28" : "#eaecf5",
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.keyParamRow,
+                    {
+                      backgroundColor:
+                        colorScheme === "dark" ? "#161f28" : "#eaecf5",
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.keyParamNameText,
+                      { color: colorScheme === "dark" ? "white" : "black" },
+                    ]}
+                  >
+                    File Name:
+                  </Text>
+                  <TextInput
+                    style={styles.textInput}
+                    mode="outlined"
+                    outlineColor="#2e7ef2"
+                    activeOutlineColor="#2e7ef2"
+                    activeUnderlineColor="#2e7ef2"
+                    //defaultValue={fileName}
+                    onChangeText={props.handleChange("file")}
+                    theme={{
+                      colors: {
+                        text: colorScheme === "dark" ? "black" : "black",
+                      },
+                    }}
+                    value={props.values.file}
+                  />
+                </View>
+
+                <Separator />
+
+                <Text
+                  style={[
+                    styles.keyParamSectionTitle,
+                    { color: colorScheme === "dark" ? "white" : "black" },
+                  ]}
+                >
+                  Key Parameters
+                </Text>
+
+                {containerParameters?.map(function (item: any, index: number) {
+                  let itemName = item.name;
+                  return (
+                    <View
+                      style={[
+                        styles.keyParamRow,
+                        {
+                          backgroundColor:
+                            colorScheme === "dark" ? "#161f28" : "#eaecf5",
+                        },
+                      ]}
+                      key={index}
                     >
-                        {(props) => (
-                            <View
-                                style={[
-                                    styles.keyParamContainer,
-                                    {
-                                        backgroundColor:
-                                            colorScheme === "dark" ? "#161f28" : "#eaecf5",
-                                    },
-                                ]}
-                            >
-                                <View
-                                    style={[
-                                        styles.keyParamRow,
-                                        {
-                                            backgroundColor:
-                                                colorScheme === "dark" ? "#161f28" : "#eaecf5",
-                                        },
-                                    ]}
-                                >
-                                    <Text
-                                        style={[
-                                            styles.keyParamNameText,
-                                            { color: colorScheme === "dark" ? "white" : "black" },
-                                        ]}
-                                    >
-                                        File Name:
-                                    </Text>
-                                    <TextInput
-                                        style={styles.textInput}
-                                        mode="outlined"
-                                        outlineColor="#2e7ef2"
-                                        activeOutlineColor="#2e7ef2"
-                                        activeUnderlineColor="#2e7ef2"
-                                        //defaultValue={fileName}
-                                        onChangeText={props.handleChange("file")}
-                                        theme={{
-                                            colors: {
-                                                text: colorScheme === "dark" ? "black" : "black",
-                                            },
-                                        }}
-                                        value={props.values.file}
-                                    />
-                                </View>
+                      <Text
+                        style={[
+                          styles.keyParamNameText,
+                          { color: colorScheme === "dark" ? "white" : "black" },
+                        ]}
+                      >
+                        {itemName}:
+                      </Text>
 
-                                <Separator />
-
-                                <Text
-                                    style={[
-                                        styles.keyParamSectionTitle,
-                                        { color: colorScheme === "dark" ? "white" : "black" },
-                                    ]}
-                                >
-                                    Key Parameters
-                                </Text>
-
-                                {containerParameters?.map(function (item: any, index: number) {
-                                    let itemName = item.name;
-                                    return (
-                                        <View
-                                            style={[
-                                                styles.keyParamRow,
-                                                {
-                                                    backgroundColor:
-                                                        colorScheme === "dark" ? "#161f28" : "#eaecf5",
-                                                },
-                                            ]}
-                                            key={index}
-                                        >
-                                            <Text
-                                                style={[
-                                                    styles.keyParamNameText,
-                                                    { color: colorScheme === "dark" ? "white" : "black" },
-                                                ]}
-                                            >
-                                                {itemName}:
-                                            </Text>
-
-                                            {item.type == "enum" ? (
-                                                <SelectDropdown
-                                                    data={item.values}
-                                                    defaultButtonText={`Select ${itemName}`}
-                                                    onSelect={(selectedItem) => {
-                                                        props.setFieldValue(`${itemName}`, selectedItem);
-                                                    }}
-                                                    buttonTextAfterSelection={(selectedItem) => {
-                                                        // text represented after item is selected
-                                                        return selectedItem;
-                                                    }}
-                                                    rowTextForSelection={(item) => {
-                                                        // text represented for each item in dropdown
-                                                        return item;
-                                                    }}
-                                                    buttonStyle={styles.dropdown1BtnStyle}
-                                                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                                                    renderDropdownIcon={(isOpened) => {
-                                                        return (
-                                                            <FontAwesome
-                                                                name={isOpened ? "chevron-up" : "chevron-down"}
-                                                                color={"#444"}
-                                                                size={12}
-                                                            />
-                                                        );
-                                                    }}
-                                                    dropdownIconPosition={"right"}
-                                                    dropdownStyle={styles.dropdown1DropdownStyle}
-                                                    rowStyle={styles.dropdown1RowStyle}
-                                                    rowTextStyle={styles.dropdown1RowTxtStyle}
-                                                    {...(props.errors.itemName &&
-                                                        props.touched.itemName && (
-                                                            <Text>{props.errors.title}</Text>
-                                                        ))}
-                                                />
-                                            ) : (
-                                                <TextInput
-                                                    style={styles.textInput}
-                                                    mode="outlined"
-                                                    outlineColor="#2e7ef2"
-                                                    activeOutlineColor="#2e7ef2"
-                                                    activeUnderlineColor="#2e7ef2"
-                                                    onChangeText={props.handleChange(`${item.name}`)}
-                                                    theme={{
-                                                        colors: {
-                                                            text: colorScheme === "dark" ? "black" : "black",
-                                                        },
-                                                    }}
-                                                    placeholder={item.type}
-                                                    value={props.values.itemName}
-                                                    {...(props.errors.itemName &&
-                                                        props.touched.itemName && (
-                                                            <Text>{props.errors.title}</Text>
-                                                        ))}
-                                                />
-                                            )}
-                                        </View>
-                                    );
-                                })}
-                                <View
-                                    style={[
-                                        styles.buttonContainer,
-                                        {
-                                            backgroundColor:
-                                                colorScheme === "dark" ? "#161f28" : "#eaecf5",
-                                        },
-                                    ]}
-                                >
-                                    <Button
-                                        style={[
-                                            styles.submitButton,
-                                            {
-                                                backgroundColor: isButtonDisabled ? "grey" : "#2e7cf2",
-                                            },
-                                        ]}
-                                        color="white"
-                                        onPress={props.handleSubmit}
-                                        disabled={isButtonDisabled}
-                                    >
-                                        {" "}
-                                        Submit
-                                    </Button>
-                                </View>
-                                <View
-                                    style={[
-                                        styles.buttonContainer,
-                                        {
-                                            backgroundColor:
-                                                colorScheme === "dark" ? "#161f28" : "#eaecf5",
-                                        },
-                                    ]}
-                                ></View>
-                            </View>
-                        )}
-                    </Formik>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-        </ScrollView>
-    );
+                      {item.type == "enum" ? (
+                        <SelectDropdown
+                          data={item.values}
+                          defaultButtonText={`Select ${itemName}`}
+                          onSelect={(selectedItem) => {
+                            props.setFieldValue(`${itemName}`, selectedItem);
+                          }}
+                          buttonTextAfterSelection={(selectedItem) => {
+                            // text represented after item is selected
+                            return selectedItem;
+                          }}
+                          rowTextForSelection={(item) => {
+                            // text represented for each item in dropdown
+                            return item;
+                          }}
+                          buttonStyle={styles.dropdown1BtnStyle}
+                          buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                          renderDropdownIcon={(isOpened) => {
+                            return (
+                              <FontAwesome
+                                name={isOpened ? "chevron-up" : "chevron-down"}
+                                color={"#444"}
+                                size={12}
+                              />
+                            );
+                          }}
+                          dropdownIconPosition={"right"}
+                          dropdownStyle={styles.dropdown1DropdownStyle}
+                          rowStyle={styles.dropdown1RowStyle}
+                          rowTextStyle={styles.dropdown1RowTxtStyle}
+                          {...(props.errors.itemName &&
+                            props.touched.itemName && (
+                              <Text>{props.errors.title}</Text>
+                            ))}
+                        />
+                      ) : (
+                        <TextInput
+                          style={styles.textInput}
+                          mode="outlined"
+                          outlineColor="#2e7ef2"
+                          activeOutlineColor="#2e7ef2"
+                          activeUnderlineColor="#2e7ef2"
+                          onChangeText={props.handleChange(`${item.name}`)}
+                          theme={{
+                            colors: {
+                              text: colorScheme === "dark" ? "black" : "black",
+                            },
+                          }}
+                          placeholder={item.type}
+                          value={props.values.itemName}
+                          {...(props.errors.itemName &&
+                            props.touched.itemName && (
+                              <Text>{props.errors.title}</Text>
+                            ))}
+                        />
+                      )}
+                    </View>
+                  );
+                })}
+                <View
+                  style={[
+                    styles.buttonContainer,
+                    {
+                      backgroundColor:
+                        colorScheme === "dark" ? "#161f28" : "#eaecf5",
+                    },
+                  ]}
+                >
+                  <Button
+                    style={[
+                      styles.submitButton,
+                      {
+                        backgroundColor: isButtonDisabled ? "grey" : "#2e7cf2",
+                      },
+                    ]}
+                    color="white"
+                    onPress={props.handleSubmit}
+                    disabled={isButtonDisabled}
+                  >
+                    {" "}
+                    Submit
+                  </Button>
+                </View>
+                <View
+                  style={[
+                    styles.buttonContainer,
+                    {
+                      backgroundColor:
+                        colorScheme === "dark" ? "#161f28" : "#eaecf5",
+                    },
+                  ]}
+                ></View>
+              </View>
+            )}
+          </Formik>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </ScrollView>
+  );
 };
 
 export default KeyParameterForm;
 
 const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        padding: 20,
-    },
-    keyParamContainer: {
-        flex: 1,
-        bottom: -40,
-    },
-    keyParamSectionTitle: {
-        padding: 5,
-        fontSize: 18,
-        color: "#fff",
-        alignSelf: "center",
-    },
-    keyParamRow: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    keyParamNameText: {
-        fontSize: 18,
-        color: "#fff",
-        paddingLeft: 30,
-    },
-    dropdownContainer: {
-        flex: 1,
-        height: 80,
-        justifyContent: "center",
-        backgroundColor: "#eaecf5",
-    },
-    textInput: {
-        margin: 5,
-        marginRight: 30,
-        width: 200,
-        height: 30,
-        borderRadius: 10,
-        textAlign: "center",
-    },
-    submitButton: {
-        width: 200,
-        height: 45,
-        borderRadius: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    buttonContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-        margin: 40,
-    },
-    submitButtonText: {
-        fontSize: 18,
-        color: "#fff",
-    },
-    dropdown1BtnStyle: {
-        width: 200,
-        height: 34,
-        marginLeft: 30,
-        backgroundColor: "#F6F6F6",
-        borderRadius: 5,
-        borderColor: "#2e7cf2",
-        borderWidth: 1,
-        margin: 10,
-    },
-    dropdown1BtnTxtStyle: { color: "black", textAlign: "center", fontSize: 14 },
-    dropdown1DropdownStyle: { borderRadius: 10 },
-    dropdown1RowStyle: {
-        backgroundColor: "#EFEFEF",
-        borderBottomColor: "#C5C5C5",
-        height: 40,
-    },
-    dropdown1RowTxtStyle: { color: "#444", textAlign: "center", fontSize: 14 },
+  mainContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  keyParamContainer: {
+    flex: 1,
+    bottom: -40,
+  },
+  keyParamSectionTitle: {
+    padding: 5,
+    fontSize: 18,
+    color: "#fff",
+    alignSelf: "center",
+  },
+  keyParamRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  keyParamNameText: {
+    fontSize: 18,
+    color: "#fff",
+    paddingLeft: 30,
+  },
+  dropdownContainer: {
+    flex: 1,
+    height: 80,
+    justifyContent: "center",
+    backgroundColor: "#eaecf5",
+  },
+  textInput: {
+    margin: 5,
+    marginRight: 30,
+    width: 200,
+    height: 30,
+    borderRadius: 10,
+    textAlign: "center",
+  },
+  submitButton: {
+    width: 200,
+    height: 45,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 40,
+  },
+  submitButtonText: {
+    fontSize: 18,
+    color: "#fff",
+  },
+  dropdown1BtnStyle: {
+    width: 200,
+    height: 34,
+    marginLeft: 30,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 5,
+    borderColor: "#2e7cf2",
+    borderWidth: 1,
+    margin: 10,
+  },
+  dropdown1BtnTxtStyle: { color: "black", textAlign: "center", fontSize: 14 },
+  dropdown1DropdownStyle: { borderRadius: 10 },
+  dropdown1RowStyle: {
+    backgroundColor: "#EFEFEF",
+    borderBottomColor: "#C5C5C5",
+    height: 40,
+  },
+  dropdown1RowTxtStyle: { color: "#444", textAlign: "center", fontSize: 14 },
 });

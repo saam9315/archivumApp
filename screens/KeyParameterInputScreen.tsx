@@ -1,21 +1,24 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
-import KeyParameterForm from '../modules/FileUpload/KeyParameterForm';
-import { Container } from '../types';
+import React from "react";
+import { SafeAreaView, StyleSheet, useColorScheme } from "react-native";
+import Colors from "../constants/Colors";
+import KeyParameterForm from "../modules/FileUpload/KeyParameterForm";
+import { Container } from "../types";
 
 export default function KeyParameterInputScreen({ route }: any) {
   const container: Container = route.params.container;
   const colorScheme = useColorScheme();
-  const containerBackgroundColor =
-    colorScheme === "dark" ? "#161f28" : "#eaecf5";
+  const containerBackground =
+    colorScheme === "dark"
+      ? Colors.dark.containerBackground
+      : Colors.light.containerBackground;
 
   return (
-    <SafeAreaView style={[styles.mainContainer, { backgroundColor: containerBackgroundColor }]}>
+    <SafeAreaView
+      style={[styles.mainContainer, { backgroundColor: containerBackground }]}
+    >
       <KeyParameterForm container={container} />
     </SafeAreaView>
-
-
-  )
+  );
 }
 
 const styles = StyleSheet.create({

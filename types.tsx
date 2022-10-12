@@ -3,13 +3,16 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import {
+  CompositeScreenProps,
+  NavigatorScreenParams,
+} from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList { }
+    interface RootParamList extends RootStackParamList {}
   }
 }
 
@@ -22,10 +25,8 @@ export type RootStackParamList = {
   EntitiesTableScreen: Container | undefined;
 };
 
-export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
-  RootStackParamList,
-  Screen
->;
+export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
+  NativeStackScreenProps<RootStackParamList, Screen>;
 
 export type RootTabParamList = {
   HomeScreen: undefined;
@@ -33,22 +34,22 @@ export type RootTabParamList = {
   GroupsScreen: undefined;
 };
 
-export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<
-  BottomTabScreenProps<RootTabParamList, Screen>,
-  NativeStackScreenProps<RootStackParamList>
->;
-
+export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
+  CompositeScreenProps<
+    BottomTabScreenProps<RootTabParamList, Screen>,
+    NativeStackScreenProps<RootStackParamList>
+  >;
 
 export interface User {
-  id?: string
-  name: string
-  email: string
+  id?: string;
+  name: string;
+  email: string;
 }
 
 export interface Group {
-  name: string
-  users: User[]
-  owners?: User[]
+  name: string;
+  users: User[];
+  owners?: User[];
 }
 
 export interface KeyParameter {
@@ -61,15 +62,13 @@ export interface ContainerParameters {
   containerParameters: KeyParameter[];
 }
 
-
-
 export interface Container {
   apiKey?: string;
   archivalDuration?: string; // pattern: ^P(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$
   connectors?: ContainerConnector[];
   description: string;
   displayName: string;
-  indexingProperties?: Array<{}>
+  indexingProperties?: Array<{}>;
   creationDateTime?: string;
   mediaType?: string;
   name: string;
@@ -80,13 +79,11 @@ export interface Container {
   rules?: Rule[];
   userGroups?: Array<Group>;
   bulkActionEnabled: boolean;
-
 }
 
-export type ContainerProps =
-  {
-    container: Container;
-  }
+export type ContainerProps = {
+  container: Container;
+};
 
 export type ContainerConnector = {
   id: string;
@@ -96,20 +93,20 @@ export type ContainerConnector = {
   syncPeriod: string;
   connectionId: string;
   connectionActive: boolean;
-}
+};
 
 export type Rule = {
   subjectId: string;
   subjectType: string;
   subjectDisplay: string;
   restrictions: Restriction[];
-}
+};
 
 export interface Condition {
-  [key: string]: []
+  [key: string]: [];
 }
 
-export type PermissionType = 'READ' | 'WRITE'
+export type PermissionType = "READ" | "WRITE";
 
 export interface Restriction {
   condition: Condition | {};
@@ -119,6 +116,7 @@ export interface Restriction {
 export interface file {
   cancelled?: boolean;
   height?: number;
+  base64?: string;
   type?: string;
   uri: string;
   width?: number;

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ImagePickerResult } from "expo-image-picker";
 import { Alert } from "react-native";
 import { atom, selector, selectorFamily } from "recoil";
 import { AuthData } from "../../contexts/Auth";
@@ -21,51 +22,6 @@ export const shouldRefreshTokenAtom = atom({
 
 export const selectedFileAtom = atom<file>({
   key: "selectedFile",
-});
-
-export const uploadFileSelector = selectorFamily({
-  key: "uploadFile",
-  get:
-    (file: any) =>
-    async ({ get }) => {
-      const authData = get(userTokenAtom);
-      const accessToken = authData?.accessToken;
-
-      return "";
-
-      //   if (accessToken) {
-      //     const headerConfig = {
-      //       headers: { Authorization: `Bearer ${accessToken}` },
-      //     };
-      //     const containerGetUrl =
-      //       "https://dev.archivum.mblb.net/api/containers?pageSize=100";
-
-      //     const response = await axios.get(containerGetUrl, headerConfig);
-
-      //     if (response) {
-      //       return response.data.elements.map((entry: Container) => ({
-      //         apiKey: entry.apiKey,
-      //         archivalDuration: entry.archivalDuration, // pattern: ^P(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$
-      //         connectors: entry.connectors,
-      //         description: entry.description,
-      //         displayName: entry.displayName,
-      //         indexingProperties: entry.indexingProperties,
-      //         creationDateTime: entry.creationDateTime,
-      //         mediaType: entry.mediaType,
-      //         name: entry.name,
-      //         owner: entry.owner,
-      //         ownerGroups: entry.ownerGroups,
-      //         requiredParameters: entry.requiredParameters,
-      //         retentionDuration: entry.retentionDuration, // pattern: ^P(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$
-      //         rules: entry.rules,
-      //         userGroups: entry.userGroups,
-      //         bulkActionEnabled: entry.bulkActionEnabled,
-      //       }));
-      //     }
-      //   } else {
-      //     return [];
-      //   }
-    },
 });
 
 export const containerListSelector = selector({
@@ -104,7 +60,7 @@ export const containerListSelector = selector({
         }));
       }
     } else {
-      return [];
+      return [null];
     }
   },
 });
