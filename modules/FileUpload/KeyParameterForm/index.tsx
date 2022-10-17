@@ -68,17 +68,31 @@ const KeyParameterForm = (container: ContainerProps) => {
             initialValues={initialFormValues}
             validationSchema={formValidationSchema}
             onSubmit={async (values, actions) => {
+              var fileExtension: string = file.uri.substring(
+                file.uri.lastIndexOf(".") + 1
+              );
+              fileExtension = fileExtension === "jpg" ? "jpeg" : fileExtension;
+
               //console.log(values);
               var bodyFormData = new FormData();
 
-              bodyFormData.append("file", file.uri);
+              let fileUri =
+                Platform.OS === "android"
+                  ? file.uri
+                  : file.uri.replace("file://", "");
 
-              //console.log(bodyFormData);
+              bodyFormData.append("File", fileUri);
 
-              // let fileUri =
-              //   Platform.OS === "android"
-              //     ? file.uri
-              //     : file.uri.replace("file://", "");
+              bodyFormData.append(
+                "file",
+                JSON.parse(
+                  JSON.stringify({
+                    uri: file.uri,
+                    name: fileName,
+                    type: `image/${fileExtension}`,
+                  })
+                )
+              );
 
               let asArray = Object.entries(values);
 
@@ -93,21 +107,22 @@ const KeyParameterForm = (container: ContainerProps) => {
                 .join("&");
 
               if (!userAccessToken.shouldRefresh()) {
-                let token = `Bearer ${userAccessToken.accessToken}`;
+                let TOKEN = `Bearer ${userAccessToken.accessToken}`;
                 //console.log(headerConfig)
+                const BASE_URL = "https://dev.archivum.mblb.net/api/entities";
 
-                const entityLandingZoneUrl = `https://dev.archivum.mblb.net/api/entities/landing-zone/${currContainer.name}`;
+                const entityLandingZoneUrl = `${BASE_URL}/landing-zone/${currContainer.name}`;
 
-                const entityUploadUrl = `https://dev.archivum.mblb.net/api/entities/by-temp-entity-key/${currContainer.name}?${queryString}`;
+                const entityUploadUrl = `${BASE_URL}/by-temp-entity-key/${currContainer.name}?${queryString}`;
                 //console.log(entityPostUrl);
 
                 let requestConfig = {
                   method: "POST",
                   url: entityLandingZoneUrl,
-                  body: file,
+                  body: bodyFormData,
                   headers: {
-                    Authorization: token,
-                    "X-Filename": values.file,
+                    Authorization: TOKEN,
+                    "X-Filename": fileName,
                     "Content-Type": "multipart/form-data",
                   },
                 };
@@ -116,7 +131,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                   .then(async (response: AxiosResponse) => {
                     console.log(response.data);
 
-                    await timeout(1000);
+                    await timeout(3000);
 
                     axios({
                       method: "put",
@@ -124,8 +139,8 @@ const KeyParameterForm = (container: ContainerProps) => {
                       url: entityUploadUrl,
                       headers: {
                         "Content-Type": "application/json",
-                        "X-filename": values.file,
-                        authorization: token,
+                        "X-filename": fileName,
+                        authorization: TOKEN,
                       },
                     })
                       .then((response: AxiosResponse) => {
