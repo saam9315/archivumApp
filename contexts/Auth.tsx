@@ -84,7 +84,6 @@ const AuthProvider: React.FC = ({ children }) => {
   ) {
     try {
       //Try get the data from Async Storage
-      console.log(config);
       const authDataSerialized = await AsyncStorage.getItem("tokenObject");
 
       console.log(
