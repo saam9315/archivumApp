@@ -1,12 +1,23 @@
-import React, { createContext, useContext, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as WebBrowser from 'expo-web-browser';
-import * as AuthSession from 'expo-auth-session';
-//import { AuthData, authService } from '../services/authService';
-import { TokenResponseConfig, useAutoDiscovery, TokenType, RefreshTokenRequestConfig, RevokeTokenRequestConfig, TokenResponse } from 'expo-auth-session';
-import { Alert } from 'react-native';
-import { isLoadingAtom, userTokenAtom } from '../stores/Atoms';
-import { useSetRecoilState } from 'recoil';
+import React, { createContext, useContext, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
+import {
+  REACT_APP_CALLBACK_URL,
+  REACT_APP_CLIENT_ID,
+  REACT_APP_TENANT_ID,
+} from "@env";
+import {
+  TokenResponseConfig,
+  useAutoDiscovery,
+  TokenType,
+  RefreshTokenRequestConfig,
+  RevokeTokenRequestConfig,
+  TokenResponse,
+} from "expo-auth-session";
+import { Alert } from "react-native";
+import { isLoadingAtom, userTokenAtom } from "../stores/Atoms";
+import { useSetRecoilState } from "recoil";
 
 export type AuthData = {
   accessToken: string;
@@ -24,9 +35,12 @@ type AuthContextData = {
   signOut(): void;
 };
 
-const clientId = "69f454ab-2519-4656-841c-c8cce1183656";
-const scope = ["api://3ebe89cf-5f90-4df5-afc4-f5dadae2c1a6/all", "offline_access"];
-const callBackUrl = "msauth.org.reactjs.native.archivum://auth";
+const clientId = REACT_APP_CLIENT_ID;
+const scope = [
+  "api://3ebe89cf-5f90-4df5-afc4-f5dadae2c1a6/all",
+  "offline_access",
+];
+const callBackUrl = REACT_APP_CALLBACK_URL;
 
 const config = {
   clientId: clientId,
@@ -38,23 +52,22 @@ const config = {
 
 WebBrowser.maybeCompleteAuthSession();
 
-
 //Create the Auth Context with the data type specified
 //and a empty object
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
-
   const setUserToken = useSetRecoilState<AuthData | undefined>(userTokenAtom);
 
-  const discovery = useAutoDiscovery(
-    "https://login.microsoftonline.com/f2658745-f87e-4fb9-8ff6-6b616a8cec41/v2.0"
+  var discovery = useAutoDiscovery(
+    `https://login.microsoftonline.com/${REACT_APP_TENANT_ID}/v2.0`
   );
 
-
-  const [request, result, promptAsync] = AuthSession.useAuthRequest(config, discovery);
-
-
+  if (config !== undefined)
+    var [request, result, promptAsync] = AuthSession.useAuthRequest(
+      config,
+      discovery
+    );
 
   //the AuthContext start with loading equals true
   //and stay like this, until the data be load from Async Storage
@@ -66,69 +79,79 @@ const AuthProvider: React.FC = ({ children }) => {
     loadStorageData(discovery);
   }, []);
 
-
-
-  async function loadStorageData(discovery: AuthSession.DiscoveryDocument | null) {
+  async function loadStorageData(
+    discovery: AuthSession.DiscoveryDocument | null
+  ) {
     try {
       //Try get the data from Async Storage
-      const authDataSerialized = await AsyncStorage.getItem('tokenObject');
+      console.log(config);
+      const authDataSerialized = await AsyncStorage.getItem("tokenObject");
 
-      console.log("\n============================================= Token stored locally =============================================\n", authDataSerialized);
-
+      console.log(
+        "\n============================================= Token stored locally =============================================\n",
+        authDataSerialized
+      );
 
       if (authDataSerialized !== null) {
-
         const parsedToken = JSON.parse(authDataSerialized);
         const tokenResConf = new TokenResponse(parsedToken);
 
-        console.log("\n============================================= Local Token should be refreshed =============================================\n", tokenResConf.shouldRefresh());
+        console.log(
+          "\n============================================= Local Token should be refreshed =============================================\n",
+          tokenResConf.shouldRefresh()
+        );
 
         if (tokenResConf.shouldRefresh()) {
           try {
-
-            const refreshConfig: RefreshTokenRequestConfig = { clientId: clientId, refreshToken: tokenResConf.refreshToken }
+            const refreshConfig: RefreshTokenRequestConfig = {
+              clientId: clientId,
+              refreshToken: tokenResConf.refreshToken,
+            };
             let newToken: AuthSession.TokenResponse;
             if (discovery) {
-              newToken = await AuthSession.refreshAsync(refreshConfig, discovery);
+              newToken = await AuthSession.refreshAsync(
+                refreshConfig,
+                discovery
+              );
 
-              console.log("\n============================================= Refreshed Token =============================================\n", newToken);
+              console.log(
+                "\n============================================= Refreshed Token =============================================\n",
+                newToken
+              );
 
               setUserToken(newToken);
-              AsyncStorage.setItem('tokenObject', JSON.stringify(newToken));
+              AsyncStorage.setItem("tokenObject", JSON.stringify(newToken));
               setIsLoading(false);
-            }
-            else {
-              console.log("\n============================================= Discovery is null =============================================\n", discovery);
+            } else {
+              console.log(
+                "\n============================================= Discovery is null =============================================\n",
+                discovery
+              );
               setUserToken(undefined);
               setIsLoading(false);
             }
             //Persist the data in the Async Storage
             //to be recovered in the next user session
-          }
-
-          catch (err: any) {
-            console.log(err)
+          } catch (err: any) {
+            console.log(err);
             setUserToken(undefined);
             setIsLoading(false);
-
           }
-        }
-        else {
+        } else {
           setUserToken(tokenResConf);
           setIsLoading(false);
         }
         //If there are data, it's converted to an Object and the state is updated.
-
-      }
-      else {
-        console.log("\n============================================= No Token stored locally =============================================\n");
+      } else {
+        console.log(
+          "\n============================================= No Token stored locally =============================================\n"
+        );
         setUserToken(undefined);
         setIsLoading(false);
       }
-
     } catch (error) {
       console.log(error);
-      setUserToken(undefined)
+      setUserToken(undefined);
       setIsLoading(false);
     }
   }
@@ -136,7 +159,7 @@ const AuthProvider: React.FC = ({ children }) => {
   async function signIn() {
     //call the service passing credential (email and password).
     //In a real App this data will be provided by the user from some InputText components.
-    const response = await promptAsync()
+    const response = await promptAsync();
 
     if (response?.type === "success") {
       const code = response.params.code;
@@ -158,8 +181,8 @@ const AuthProvider: React.FC = ({ children }) => {
             //"============================================= Token Exchanged =============================================\n",
             responseToken
           );
-          const authData: TokenResponseConfig = responseToken?.getRequestConfig();
-
+          const authData: TokenResponseConfig =
+            responseToken?.getRequestConfig();
 
           console.log(
             "============================================= AuthData =============================================\n",
@@ -171,10 +194,9 @@ const AuthProvider: React.FC = ({ children }) => {
             setUserToken(authData);
             //Persist the data in the Async Storage
             //to be recovered in the next user session.
-            AsyncStorage.setItem('tokenObject', JSON.stringify(authData));
+            AsyncStorage.setItem("tokenObject", JSON.stringify(authData));
             setIsLoading(false);
             return;
-
           }
         } catch (err: any) {
           Alert.alert(err);
@@ -182,48 +204,54 @@ const AuthProvider: React.FC = ({ children }) => {
         }
       }
       Alert.alert("Authentication error!");
-      setUserToken(undefined)
+      setUserToken(undefined);
       setIsLoading(false);
     }
     Alert.alert("Authentication error!");
-    setUserToken(undefined)
+    setUserToken(undefined);
     setIsLoading(false);
-
-  };
+  }
 
   async function signOut() {
     //Remove data from context, so the App can be notified
     //and send the user to the AuthStack
     try {
-      const authDataSerialized = await AsyncStorage.getItem('tokenObject');
+      const authDataSerialized = await AsyncStorage.getItem("tokenObject");
 
       if (authDataSerialized !== null) {
         const storedToken: TokenResponseConfig = JSON.parse(authDataSerialized);
 
-        let revokeRequestConfig: RevokeTokenRequestConfig = { token: storedToken.accessToken };
+        let revokeRequestConfig: RevokeTokenRequestConfig = {
+          token: storedToken.accessToken,
+        };
 
-        const revokeResponse = await AuthSession.revokeAsync(revokeRequestConfig, { revocationEndpoint: discovery?.authorizationEndpoint });
+        const revokeResponse = await AuthSession.revokeAsync(
+          revokeRequestConfig,
+          { revocationEndpoint: discovery?.authorizationEndpoint }
+        );
 
-
-        console.log("============================================= Revoke =============================================\n", revokeResponse);
+        console.log(
+          "============================================= Revoke =============================================\n",
+          revokeResponse
+        );
 
         //Remove the data from Async Storage
         //to NOT be recoverede in next session.
-        await AsyncStorage.removeItem('tokenObject');
+        await AsyncStorage.removeItem("tokenObject");
         setUserToken(undefined);
-        const isTokenDeleted = await AsyncStorage.getItem('tokenObject');
-        console.log("============================================= Token Revoked =======================================\n Token stored locally = ", isTokenDeleted);
+        const isTokenDeleted = await AsyncStorage.getItem("tokenObject");
+        console.log(
+          "============================================= Token Revoked =======================================\n Token stored locally = ",
+          isTokenDeleted
+        );
         //}
-
       }
-
     } catch (error) {
-      console.log('ERROR', error)
+      console.log("ERROR", error);
       setUserToken(undefined);
       setIsLoading(false);
     }
-
-  };
+  }
 
   return (
     //This component will be used to encapsulate the whole App,
@@ -240,12 +268,10 @@ function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
 
   return context;
 }
 
 export { AuthContext, AuthProvider, useAuth };
-
-

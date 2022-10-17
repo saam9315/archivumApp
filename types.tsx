@@ -81,6 +81,10 @@ export interface Container {
   bulkActionEnabled: boolean;
 }
 
+export interface ContainerList {
+  containers: Array<Container>;
+}
+
 export type ContainerProps = {
   container: Container;
 };

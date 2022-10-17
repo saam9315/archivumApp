@@ -16,7 +16,7 @@ export const AppStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Root"
+        name="Home"
         component={BottomTabNavigator}
         options={{
           title: "Home",

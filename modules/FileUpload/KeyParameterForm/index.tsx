@@ -97,15 +97,21 @@ const KeyParameterForm = (container: ContainerProps) => {
                   .then((response: AxiosResponse) => {
                     console.log(response.data);
                     Toast.show("File uploaded successfuly!", {
+                      textStyle: {
+                        fontSize: 18,
+                      },
                       duration: Toast.durations.LONG,
                       backgroundColor: "green",
                     });
                     actions.resetForm();
-                    navigation.navigate("Root");
+                    navigation.navigate("Home");
                   })
                   .catch((error: AxiosError) => {
                     let errorData: any = error.response?.data;
                     Toast.show("" + errorData.message, {
+                      textStyle: {
+                        fontSize: 18,
+                      },
                       duration: Toast.durations.LONG,
                       backgroundColor: "red",
                     });
@@ -113,6 +119,9 @@ const KeyParameterForm = (container: ContainerProps) => {
                   });
               } else {
                 Toast.show("Unauthorised!", {
+                  textStyle: {
+                    fontSize: 18,
+                  },
                   duration: Toast.durations.LONG,
                   backgroundColor: "red",
                 });
