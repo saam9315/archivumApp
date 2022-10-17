@@ -1,13 +1,6 @@
-import { Text, SafeAreaView } from 'react-native'
-import React from 'react'
-
-
-
+import { Text, SafeAreaView } from "react-native";
+import React from "react";
 
 export default function EntitiesTableScreen() {
-    return (
-        <SafeAreaView>
-
-        </SafeAreaView>
-    )
+  return <SafeAreaView></SafeAreaView>;
 }

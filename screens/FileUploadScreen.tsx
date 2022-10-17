@@ -32,7 +32,7 @@ export default function FileUploadScreen({ route }: any) {
           { backgroundColor: containerBackgroundColor },
         ]}
       >
-        <Text style={styles.title}>{container.displayName}</Text>
+        <Text style={styles.title}>Container: {container.displayName}</Text>
         <Separator />
       </View>
       <ImageComponent container={container}></ImageComponent>

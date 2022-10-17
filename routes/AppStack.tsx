@@ -47,7 +47,7 @@ export const AppStack = () => {
         name="EntitiesTableScreen"
         component={EntitiesTableScreen}
         options={{
-          title: "Entities table",
+          title: "Entities",
           animationTypeForReplace: "push",
           animation: "slide_from_right",
         }}

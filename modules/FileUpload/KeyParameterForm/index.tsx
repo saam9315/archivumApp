@@ -7,6 +7,7 @@ import {
   Keyboard,
   View,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
@@ -32,7 +33,7 @@ const KeyParameterForm = (container: ContainerProps) => {
   const file = useRecoilValue(selectedFileAtom);
   const userToken = useRecoilValue(userTokenAtom);
   if (userToken) var userAccessToken = new TokenResponse(userToken);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const ofTypeString = ["enum", "keyword", "text", "date"];
 
   let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1);
@@ -53,6 +54,10 @@ const KeyParameterForm = (container: ContainerProps) => {
     ])
   );
 
+  function timeout(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   const formValidationSchema = Yup.object().shape(validationObject);
 
   return (
@@ -63,12 +68,17 @@ const KeyParameterForm = (container: ContainerProps) => {
             initialValues={initialFormValues}
             validationSchema={formValidationSchema}
             onSubmit={async (values, actions) => {
-              console.log(values);
+              //console.log(values);
               var bodyFormData = new FormData();
 
               bodyFormData.append("file", file.uri);
 
               //console.log(bodyFormData);
+
+              // let fileUri =
+              //   Platform.OS === "android"
+              //     ? file.uri
+              //     : file.uri.replace("file://", "");
 
               let asArray = Object.entries(values);
 
@@ -82,38 +92,64 @@ const KeyParameterForm = (container: ContainerProps) => {
                 .map((key) => key + "=" + asObj[key])
                 .join("&");
 
-              //console.log(queryString);
-              //console.log(bodyFormData)
-
               if (!userAccessToken.shouldRefresh()) {
+                let token = `Bearer ${userAccessToken.accessToken}`;
                 //console.log(headerConfig)
-                const entityPostUrl = `https://dev.archivum.mblb.net/api/entities/${currContainer.name}?${queryString}`;
+
+                const entityLandingZoneUrl = `https://dev.archivum.mblb.net/api/entities/landing-zone/${currContainer.name}`;
+
+                const entityUploadUrl = `https://dev.archivum.mblb.net/api/entities/by-temp-entity-key/${currContainer.name}?${queryString}`;
                 //console.log(entityPostUrl);
 
                 let requestConfig = {
                   method: "POST",
-                  url: entityPostUrl,
+                  url: entityLandingZoneUrl,
+                  body: file,
                   headers: {
-                    Authorization: `Bearer ${userAccessToken.accessToken}`,
-                    accept: "application/json",
-                    "Content-Type": `multipart/form-data`,
-                    "X-Filename": `${values.file}`,
+                    Authorization: token,
+                    "X-Filename": values.file,
+                    "Content-Type": "multipart/form-data",
                   },
-                  body: bodyFormData,
                 };
 
                 axios(requestConfig)
-                  .then((response: AxiosResponse) => {
+                  .then(async (response: AxiosResponse) => {
                     console.log(response.data);
-                    Toast.show("File uploaded successfuly!", {
-                      textStyle: {
-                        fontSize: 18,
+
+                    await timeout(1000);
+
+                    axios({
+                      method: "put",
+                      data: JSON.stringify(response.data.tempEntityKey),
+                      url: entityUploadUrl,
+                      headers: {
+                        "Content-Type": "application/json",
+                        "X-filename": values.file,
+                        authorization: token,
                       },
-                      duration: Toast.durations.LONG,
-                      backgroundColor: "green",
-                    });
-                    actions.resetForm();
-                    navigation.navigate("Home");
+                    })
+                      .then((response: AxiosResponse) => {
+                        console.log(response.data);
+                        Toast.show("File uploaded successfuly!", {
+                          textStyle: {
+                            fontSize: 18,
+                          },
+                          duration: Toast.durations.LONG,
+                          backgroundColor: "green",
+                        });
+                        actions.resetForm();
+                        navigation.navigate("Home");
+                      })
+                      .catch((error: AxiosError) => {
+                        let errorData: any = error.response?.data;
+                        Toast.show("" + errorData.message, {
+                          textStyle: {
+                            fontSize: 18,
+                          },
+                          duration: Toast.durations.LONG,
+                          backgroundColor: "red",
+                        });
+                      });
                   })
                   .catch((error: AxiosError) => {
                     let errorData: any = error.response?.data;
@@ -313,8 +349,9 @@ const KeyParameterForm = (container: ContainerProps) => {
                       //color: !(isValid && dirty) ? "lightgrey" : "white",
                     }}
                     onPress={handleSubmit}
+                    //loading={true}
                   >
-                    Submit
+                    Upload File
                   </Button>
                 </View>
                 <View
@@ -340,6 +377,7 @@ export default KeyParameterForm;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    height: 900,
     padding: 20,
   },
   keyParamContainer: {
