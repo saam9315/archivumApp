@@ -68,6 +68,7 @@ const KeyParameterForm = (container: ContainerProps) => {
             initialValues={initialFormValues}
             validationSchema={formValidationSchema}
             onSubmit={async (values, actions) => {
+              setIsButtonLoading(true);
               var fileExtension: string = file.uri.substring(
                 file.uri.lastIndexOf(".") + 1
               );
@@ -144,6 +145,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                       },
                     })
                       .then((response: AxiosResponse) => {
+                        setIsButtonLoading(false);
                         console.log(response.data);
                         Toast.show("File uploaded successfuly!", {
                           textStyle: {
@@ -156,6 +158,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                         navigation.navigate("Home");
                       })
                       .catch((error: AxiosError) => {
+                        setIsButtonLoading(false);
                         let errorData: any = error.response?.data;
                         Toast.show("" + errorData.message, {
                           textStyle: {
@@ -167,6 +170,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                       });
                   })
                   .catch((error: AxiosError) => {
+                    setIsButtonLoading(false);
                     let errorData: any = error.response?.data;
                     Toast.show("" + errorData.message, {
                       textStyle: {
@@ -178,6 +182,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                     //console.log(error.message)
                   });
               } else {
+                setIsButtonLoading(false);
                 Toast.show("Unauthorised!", {
                   textStyle: {
                     fontSize: 18,
@@ -253,7 +258,10 @@ const KeyParameterForm = (container: ContainerProps) => {
                   Key Parameters
                 </Text>
 
-                {containerParameters?.map(function (item: any, index: number) {
+                {containerParameters?.map(function (
+                  item: KeyParameter | any,
+                  index: number
+                ) {
                   let itemName: string = item.name;
                   return (
                     <View
@@ -325,6 +333,11 @@ const KeyParameterForm = (container: ContainerProps) => {
                             errors[itemName] && touched[itemName] ? true : false
                           }
                           mode="outlined"
+                          keyboardType={
+                            ofTypeString.includes(item.type)
+                              ? "default"
+                              : "numeric"
+                          }
                           outlineColor="#2e7ef2"
                           activeOutlineColor="#2e7ef2"
                           activeUnderlineColor="#2e7ef2"
@@ -364,7 +377,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                       //color: !(isValid && dirty) ? "lightgrey" : "white",
                     }}
                     onPress={handleSubmit}
-                    //loading={true}
+                    loading={isButtonLoading}
                   >
                     Upload File
                   </Button>
