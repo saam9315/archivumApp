@@ -348,9 +348,10 @@ const KeyParameterForm = (container: ContainerProps) => {
                           }
                           mode="outlined"
                           keyboardType={
-                            ofTypeString.includes(item.type)
+                            ofTypeString.includes(item.type) &&
+                            item.type !== "date"
                               ? "default"
-                              : "numeric"
+                              : "numbers-and-punctuation"
                           }
                           outlineColor="#2e7ef2"
                           activeOutlineColor="#2e7ef2"
