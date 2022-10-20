@@ -16,7 +16,7 @@ export const AppStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Root"
+        name="Home"
         component={BottomTabNavigator}
         options={{
           title: "Home",
@@ -47,7 +47,7 @@ export const AppStack = () => {
         name="EntitiesTableScreen"
         component={EntitiesTableScreen}
         options={{
-          title: "Entities table",
+          title: "Entities",
           animationTypeForReplace: "push",
           animation: "slide_from_right",
         }}

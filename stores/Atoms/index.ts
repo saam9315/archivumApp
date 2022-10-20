@@ -1,7 +1,5 @@
 import axios from "axios";
-import { ImagePickerResult } from "expo-image-picker";
-import { Alert } from "react-native";
-import { atom, selector, selectorFamily } from "recoil";
+import { atom, selector, useRecoilState } from "recoil";
 import { AuthData } from "../../contexts/Auth";
 import { Container, file } from "../../types";
 
@@ -22,6 +20,11 @@ export const shouldRefreshTokenAtom = atom({
 
 export const selectedFileAtom = atom<file>({
   key: "selectedFile",
+});
+
+export const containersAtom = atom({
+  key: "containers",
+  default: null,
 });
 
 export const containerListSelector = selector({

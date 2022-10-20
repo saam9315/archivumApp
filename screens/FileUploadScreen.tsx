@@ -9,7 +9,6 @@ import {
 import Separator from "../components/Separator";
 import Colors from "../constants/Colors";
 import ImageComponent from "../modules/FileUpload/ImageComponent";
-
 import { Container } from "../types";
 
 export default function FileUploadScreen({ route }: any) {
@@ -33,8 +32,7 @@ export default function FileUploadScreen({ route }: any) {
           { backgroundColor: containerBackgroundColor },
         ]}
       >
-        <Text style={styles.title}>{container.displayName}</Text>
-        {/*<Text style={styles.title}>Description: {container.description}</Text>*/}
+        <Text style={styles.title}>Container: {container.displayName}</Text>
         <Separator />
       </View>
       <ImageComponent container={container}></ImageComponent>

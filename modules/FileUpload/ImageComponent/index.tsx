@@ -35,7 +35,7 @@ export default function ImageComponent(container: any) {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      base64: true,
+      base64: false,
       quality: 1,
     });
     //console.log(result)
@@ -59,7 +59,7 @@ export default function ImageComponent(container: any) {
 
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      base64: true,
+      base64: false,
       quality: 1,
     });
     // Explore the result

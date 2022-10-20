@@ -7,10 +7,11 @@ import {
   Keyboard,
   View,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
-import { Button, Paragraph, TextInput } from "react-native-paper";
-import { Formik, yupToFormErrors } from "formik";
+import { Button, TextInput } from "react-native-paper";
+import { Form, Formik } from "formik";
 import { Container, ContainerProps, KeyParameter } from "../../../types";
 import { useRecoilValue } from "recoil";
 import { selectedFileAtom, userTokenAtom } from "../../../stores/Atoms";
@@ -23,6 +24,8 @@ import Separator from "../../../components/Separator";
 import { useAuth } from "../../../contexts/Auth";
 import { TokenResponse } from "expo-auth-session";
 import * as Yup from "yup";
+import * as FileSystem from "expo-file-system";
+import { FileSystemUploadResult } from "expo-file-system";
 
 const KeyParameterForm = (container: ContainerProps) => {
   const colorScheme = useColorScheme();
@@ -32,21 +35,32 @@ const KeyParameterForm = (container: ContainerProps) => {
   const file = useRecoilValue(selectedFileAtom);
   const userToken = useRecoilValue(userTokenAtom);
   if (userToken) var userAccessToken = new TokenResponse(userToken);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const ofTypeString = ["enum", "keyword", "text", "date"];
 
   let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1);
   const navigation = useNavigation();
   let auth = useAuth();
 
-  let initialFormValues = containerParameters.reduce(
-    (acc: any, cur: { name: any; value: any }) => ({
-      ...acc,
-      [cur.name]: "",
-    }),
-    { file: fileName }
+  let initialFormValues = Object.fromEntries(
+    containerParameters.map((item: KeyParameter) => [item.name, ""])
+  );
+  initialFormValues = { ...initialFormValues, file: fileName };
+
+  let validationObject = Object.fromEntries(
+    containerParameters.map((item: KeyParameter) => [
+      item.name,
+      ofTypeString.includes(item.type)
+        ? Yup.string().required()
+        : Yup.number().required(),
+    ])
   );
 
-  //const validationSchema = yup.array().of(yup.object().shape({}));
+  function timeout(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  const formValidationSchema = Yup.object().shape(validationObject);
 
   return (
     <ScrollView style={[styles.mainContainer]}>
@@ -54,12 +68,34 @@ const KeyParameterForm = (container: ContainerProps) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Formik
             initialValues={initialFormValues}
+            validationSchema={formValidationSchema}
             onSubmit={async (values, actions) => {
-              var bodyFormData = new FormData();
+              setIsButtonLoading(true);
+              // var fileExtension: string = file.uri.substring(
+              //   file.uri.lastIndexOf(".") + 1
+              // );
+              // fileExtension = fileExtension === "jpg" ? "jpeg" : fileExtension;
 
-              if (file.base64) bodyFormData.append("file", file.uri);
+              // //console.log(values);
+              // var bodyFormData = new FormData();
 
-              console.log(bodyFormData);
+              // let fileUri =
+              //   Platform.OS === "android"
+              //     ? file.uri
+              //     : file.uri.replace("file://", "");
+
+              // bodyFormData.append("File", fileUri);
+
+              // bodyFormData.append(
+              //   "file",
+              //   JSON.parse(
+              //     JSON.stringify({
+              //       uri: file.uri,
+              //       name: fileName,
+              //       type: `image/${fileExtension}`,
+              //     })
+              //   )
+              // );
 
               let asArray = Object.entries(values);
 
@@ -73,57 +109,115 @@ const KeyParameterForm = (container: ContainerProps) => {
                 .map((key) => key + "=" + asObj[key])
                 .join("&");
 
-              //console.log(queryString);
-              //console.log(bodyFormData)
-
               if (!userAccessToken.shouldRefresh()) {
+                let TOKEN = `Bearer ${userAccessToken.accessToken}`;
                 //console.log(headerConfig)
-                const entityPostUrl = `https://dev.archivum.mblb.net/api/entities/${currContainer.name}?${queryString}`;
+                const BASE_URL = "https://dev.archivum.mblb.net/api/entities";
+
+                const entityLandingZoneUrl = `${BASE_URL}/landing-zone/${currContainer.name}`;
+
+                const entityUploadUrl = `${BASE_URL}/by-temp-entity-key/${currContainer.name}?${queryString}`;
                 //console.log(entityPostUrl);
 
-                let requestConfig = {
-                  method: "POST",
-                  url: entityPostUrl,
-                  headers: {
-                    "Authorization": `Bearer ${userAccessToken.accessToken}`,
-                    "accept": "application/json",
-                    "Content-Type": `multipart/form-data`,
-                    "X-Filename": `${values.file}`,
-                  },
-                  body: bodyFormData,
-                };
+                // let requestConfig = {
+                //   method: "POST",
+                //   url: entityLandingZoneUrl,
+                //   body: bodyFormData,
+                //   headers: {
+                //     Authorization: TOKEN,
+                //     "X-Filename": fileName,
+                //     "Content-Type": "multipart/form-data",
+                //   },
+                // };
 
-                axios(requestConfig)
-                  .then((response: AxiosResponse) => {
-                    console.log(response.data);
-                    Toast.show("File uploaded successfuly!", {
-                      duration: Toast.durations.LONG,
-                      backgroundColor: "green",
-                    });
-                    actions.resetForm();
-                    navigation.navigate("Root");
-                  })
-                  .catch((error: AxiosError) => {
-                    let errorData: any = error.response?.data;
-                    Toast.show("" + errorData.message, {
+                try {
+                  const res: FileSystemUploadResult =
+                    await FileSystem.uploadAsync(
+                      entityLandingZoneUrl,
+                      file.uri,
+                      {
+                        fieldName: "file",
+                        httpMethod: "POST",
+                        headers: {
+                          authorization: TOKEN,
+                          "X-filename": fileName,
+                        },
+                      }
+                    );
+
+                  if (res.status === 200) {
+                    await timeout(3000);
+
+                    axios({
+                      method: "put",
+                      data: JSON.stringify(JSON.parse(res.body).tempEntityKey),
+                      url: entityUploadUrl,
+                      headers: {
+                        "Content-Type": "application/json",
+                        "X-filename": fileName,
+                        authorization: TOKEN,
+                      },
+                    })
+                      .then((response: AxiosResponse) => {
+                        setIsButtonLoading(false);
+                        console.log(response.data);
+                        Toast.show("File uploaded successfuly!", {
+                          textStyle: {
+                            fontSize: 18,
+                          },
+                          duration: Toast.durations.LONG,
+                          backgroundColor: "green",
+                        });
+                        actions.resetForm();
+                        navigation.navigate("Home");
+                      })
+                      .catch((error: AxiosError) => {
+                        setIsButtonLoading(false);
+                        let errorData: any = error.response?.data;
+                        Toast.show("" + errorData.message, {
+                          textStyle: {
+                            fontSize: 18,
+                          },
+                          duration: Toast.durations.LONG,
+                          backgroundColor: "red",
+                        });
+                      });
+                  } else {
+                    setIsButtonLoading(false);
+                    Toast.show(res.body, {
+                      textStyle: {
+                        fontSize: 18,
+                      },
                       duration: Toast.durations.LONG,
                       backgroundColor: "red",
                     });
-                    //console.log(error.message)
-                  });
+                  }
+                } catch (error) {
+                  console.log(error);
+                }
               } else {
+                setIsButtonLoading(false);
                 Toast.show("Unauthorised!", {
+                  textStyle: {
+                    fontSize: 18,
+                  },
                   duration: Toast.durations.LONG,
                   backgroundColor: "red",
                 });
                 auth.signOut();
               }
             }}
-            // validationSchema={Yup.object(containerParameters.map((param:KeyParameter)=>{
-            //   param.name: Yup.string().required(`${param.name} required`);
-            // }))}
           >
-            {(props) => (
+            {({
+              errors,
+              touched,
+              handleChange,
+              values,
+              setFieldValue,
+              handleSubmit,
+              dirty,
+              isValid,
+            }) => (
               <View
                 style={[
                   styles.keyParamContainer,
@@ -157,13 +251,13 @@ const KeyParameterForm = (container: ContainerProps) => {
                     activeOutlineColor="#2e7ef2"
                     activeUnderlineColor="#2e7ef2"
                     //defaultValue={fileName}
-                    onChangeText={props.handleChange("file")}
+                    onChangeText={handleChange("file")}
                     theme={{
                       colors: {
                         text: colorScheme === "dark" ? "black" : "black",
                       },
                     }}
-                    value={props.values.file}
+                    value={values.file}
                   />
                 </View>
 
@@ -178,8 +272,11 @@ const KeyParameterForm = (container: ContainerProps) => {
                   Key Parameters
                 </Text>
 
-                {containerParameters?.map(function (item: any, index: number) {
-                  let itemName = item.name;
+                {containerParameters?.map(function (
+                  item: KeyParameter | any,
+                  index: number
+                ) {
+                  let itemName: string = item.name;
                   return (
                     <View
                       style={[
@@ -205,7 +302,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                           data={item.values}
                           defaultButtonText={`Select ${itemName}`}
                           onSelect={(selectedItem) => {
-                            props.setFieldValue(`${itemName}`, selectedItem);
+                            setFieldValue(`${itemName}`, selectedItem);
                           }}
                           buttonTextAfterSelection={(selectedItem) => {
                             // text represented after item is selected
@@ -215,7 +312,19 @@ const KeyParameterForm = (container: ContainerProps) => {
                             // text represented for each item in dropdown
                             return item;
                           }}
-                          buttonStyle={styles.dropdown1BtnStyle}
+                          buttonStyle={{
+                            width: 200,
+                            height: 34,
+                            marginLeft: 30,
+                            backgroundColor: "#F6F6F6",
+                            borderRadius: 5,
+                            borderWidth: 1,
+                            margin: 10,
+                            borderColor:
+                              errors[itemName] && touched[itemName]
+                                ? "red"
+                                : "#2e7cf2",
+                          }}
                           buttonTextStyle={styles.dropdown1BtnTxtStyle}
                           renderDropdownIcon={(isOpened) => {
                             return (
@@ -230,30 +339,30 @@ const KeyParameterForm = (container: ContainerProps) => {
                           dropdownStyle={styles.dropdown1DropdownStyle}
                           rowStyle={styles.dropdown1RowStyle}
                           rowTextStyle={styles.dropdown1RowTxtStyle}
-                          {...(props.errors.itemName &&
-                            props.touched.itemName && (
-                              <Text>{props.errors.title}</Text>
-                            ))}
                         />
                       ) : (
                         <TextInput
                           style={styles.textInput}
+                          error={
+                            errors[itemName] && touched[itemName] ? true : false
+                          }
                           mode="outlined"
+                          keyboardType={
+                            ofTypeString.includes(item.type)
+                              ? "default"
+                              : "numeric"
+                          }
                           outlineColor="#2e7ef2"
                           activeOutlineColor="#2e7ef2"
                           activeUnderlineColor="#2e7ef2"
-                          onChangeText={props.handleChange(`${item.name}`)}
+                          onChangeText={handleChange(`${item.name}`)}
                           theme={{
                             colors: {
                               text: colorScheme === "dark" ? "black" : "black",
                             },
                           }}
                           placeholder={item.type}
-                          value={props.values.itemName}
-                          {...(props.errors.itemName &&
-                            props.touched.itemName && (
-                              <Text>{props.errors.title}</Text>
-                            ))}
+                          value={values.itemName}
                         />
                       )}
                     </View>
@@ -272,15 +381,19 @@ const KeyParameterForm = (container: ContainerProps) => {
                     style={[
                       styles.submitButton,
                       {
-                        backgroundColor: isButtonDisabled ? "grey" : "#2e7cf2",
+                        //backgroundColor: !(isValid && dirty)? "grey": "#2e7cf2",
+                        backgroundColor: "#2e7cf2",
                       },
                     ]}
-                    color="white"
-                    onPress={props.handleSubmit}
-                    disabled={isButtonDisabled}
+                    labelStyle={{
+                      fontFamily: "Muli-Bold",
+                      color: "white",
+                      //color: !(isValid && dirty) ? "lightgrey" : "white",
+                    }}
+                    onPress={handleSubmit}
+                    loading={isButtonLoading}
                   >
-                    {" "}
-                    Submit
+                    Upload File
                   </Button>
                 </View>
                 <View
@@ -306,6 +419,7 @@ export default KeyParameterForm;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    height: 900,
     padding: 20,
   },
   keyParamContainer: {
@@ -354,20 +468,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 40,
   },
-  submitButtonText: {
-    fontSize: 18,
-    color: "#fff",
-  },
-  dropdown1BtnStyle: {
-    width: 200,
-    height: 34,
-    marginLeft: 30,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 5,
-    borderColor: "#2e7cf2",
-    borderWidth: 1,
-    margin: 10,
-  },
+  dropdown1BtnStyle: {},
   dropdown1BtnTxtStyle: { color: "black", textAlign: "center", fontSize: 14 },
   dropdown1DropdownStyle: { borderRadius: 10 },
   dropdown1RowStyle: {

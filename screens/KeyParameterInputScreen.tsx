@@ -1,5 +1,10 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, useColorScheme } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  useColorScheme,
+} from "react-native";
 import Colors from "../constants/Colors";
 import KeyParameterForm from "../modules/FileUpload/KeyParameterForm";
 import { Container } from "../types";
@@ -13,11 +18,11 @@ export default function KeyParameterInputScreen({ route }: any) {
       : Colors.light.containerBackground;
 
   return (
-    <SafeAreaView
+    <ScrollView
       style={[styles.mainContainer, { backgroundColor: containerBackground }]}
     >
       <KeyParameterForm container={container} />
-    </SafeAreaView>
+    </ScrollView>
   );
 }
 
