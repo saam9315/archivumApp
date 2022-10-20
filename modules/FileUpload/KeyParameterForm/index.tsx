@@ -24,6 +24,8 @@ import Separator from "../../../components/Separator";
 import { useAuth } from "../../../contexts/Auth";
 import { TokenResponse } from "expo-auth-session";
 import * as Yup from "yup";
+import * as FileSystem from "expo-file-system";
+import { FileSystemUploadResult } from "expo-file-system";
 
 const KeyParameterForm = (container: ContainerProps) => {
   const colorScheme = useColorScheme();
@@ -69,31 +71,31 @@ const KeyParameterForm = (container: ContainerProps) => {
             validationSchema={formValidationSchema}
             onSubmit={async (values, actions) => {
               setIsButtonLoading(true);
-              var fileExtension: string = file.uri.substring(
-                file.uri.lastIndexOf(".") + 1
-              );
-              fileExtension = fileExtension === "jpg" ? "jpeg" : fileExtension;
+              // var fileExtension: string = file.uri.substring(
+              //   file.uri.lastIndexOf(".") + 1
+              // );
+              // fileExtension = fileExtension === "jpg" ? "jpeg" : fileExtension;
 
-              //console.log(values);
-              var bodyFormData = new FormData();
+              // //console.log(values);
+              // var bodyFormData = new FormData();
 
-              let fileUri =
-                Platform.OS === "android"
-                  ? file.uri
-                  : file.uri.replace("file://", "");
+              // let fileUri =
+              //   Platform.OS === "android"
+              //     ? file.uri
+              //     : file.uri.replace("file://", "");
 
-              bodyFormData.append("File", fileUri);
+              // bodyFormData.append("File", fileUri);
 
-              bodyFormData.append(
-                "file",
-                JSON.parse(
-                  JSON.stringify({
-                    uri: file.uri,
-                    name: fileName,
-                    type: `image/${fileExtension}`,
-                  })
-                )
-              );
+              // bodyFormData.append(
+              //   "file",
+              //   JSON.parse(
+              //     JSON.stringify({
+              //       uri: file.uri,
+              //       name: fileName,
+              //       type: `image/${fileExtension}`,
+              //     })
+              //   )
+              // );
 
               let asArray = Object.entries(values);
 
@@ -117,26 +119,38 @@ const KeyParameterForm = (container: ContainerProps) => {
                 const entityUploadUrl = `${BASE_URL}/by-temp-entity-key/${currContainer.name}?${queryString}`;
                 //console.log(entityPostUrl);
 
-                let requestConfig = {
-                  method: "POST",
-                  url: entityLandingZoneUrl,
-                  body: bodyFormData,
-                  headers: {
-                    Authorization: TOKEN,
-                    "X-Filename": fileName,
-                    "Content-Type": "multipart/form-data",
-                  },
-                };
+                // let requestConfig = {
+                //   method: "POST",
+                //   url: entityLandingZoneUrl,
+                //   body: bodyFormData,
+                //   headers: {
+                //     Authorization: TOKEN,
+                //     "X-Filename": fileName,
+                //     "Content-Type": "multipart/form-data",
+                //   },
+                // };
 
-                axios(requestConfig)
-                  .then(async (response: AxiosResponse) => {
-                    console.log(response.data);
+                try {
+                  const res: FileSystemUploadResult =
+                    await FileSystem.uploadAsync(
+                      entityLandingZoneUrl,
+                      file.uri,
+                      {
+                        fieldName: "file",
+                        httpMethod: "POST",
+                        headers: {
+                          authorization: TOKEN,
+                          "X-filename": fileName,
+                        },
+                      }
+                    );
 
+                  if (res.status === 200) {
                     await timeout(3000);
 
                     axios({
                       method: "put",
-                      data: JSON.stringify(response.data.tempEntityKey),
+                      data: JSON.stringify(JSON.parse(res.body).tempEntityKey),
                       url: entityUploadUrl,
                       headers: {
                         "Content-Type": "application/json",
@@ -168,19 +182,19 @@ const KeyParameterForm = (container: ContainerProps) => {
                           backgroundColor: "red",
                         });
                       });
-                  })
-                  .catch((error: AxiosError) => {
+                  } else {
                     setIsButtonLoading(false);
-                    let errorData: any = error.response?.data;
-                    Toast.show("" + errorData.message, {
+                    Toast.show(res.body, {
                       textStyle: {
                         fontSize: 18,
                       },
                       duration: Toast.durations.LONG,
                       backgroundColor: "red",
                     });
-                    //console.log(error.message)
-                  });
+                  }
+                } catch (error) {
+                  console.log(error);
+                }
               } else {
                 setIsButtonLoading(false);
                 Toast.show("Unauthorised!", {
