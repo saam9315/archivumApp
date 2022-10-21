@@ -303,7 +303,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                       ) : (
                         <TextInput
                           style={styles.textInput}
-                          label={`${item.type}`}
+                          //label={item.type}
                           error={
                             errors[itemName] && touched[itemName] ? true : false
                           }
@@ -323,7 +323,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                               text: colorScheme === "dark" ? "black" : "black",
                             },
                           }}
-                          //placeholder={item.type}
+                          placeholder={item.type}
                           value={values.itemName}
                         />
                       )}
