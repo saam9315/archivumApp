@@ -38,7 +38,6 @@ export default function ImageComponent(container: any) {
       base64: false,
       quality: 1,
     });
-    //console.log(result)
 
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
@@ -63,8 +62,6 @@ export default function ImageComponent(container: any) {
       quality: 1,
     });
     // Explore the result
-    //console.log(result);
-
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
       setFile(result);

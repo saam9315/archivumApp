@@ -214,7 +214,6 @@ const KeyParameterForm = (container: ContainerProps) => {
                     outlineColor="#2e7ef2"
                     activeOutlineColor="#2e7ef2"
                     activeUnderlineColor="#2e7ef2"
-                    //defaultValue={fileName}
                     onChangeText={handleChange("file")}
                     theme={{
                       colors: {
@@ -347,14 +346,12 @@ const KeyParameterForm = (container: ContainerProps) => {
                       styles.submitButton,
                       {
                         backgroundColor: isButtonLoading ? "grey" : "#2e7cf2",
-                        //backgroundColor: "#2e7cf2",
                       },
                     ]}
                     disabled={isButtonLoading}
                     labelStyle={{
                       fontFamily: "Muli-Bold",
-                      color: "white",
-                      //color: !(isValid && dirty) ? "lightgrey" : "white",
+                      color: isButtonLoading ? "lightgrey" : "white",
                     }}
                     onPress={handleSubmit}
                     loading={isButtonLoading}
