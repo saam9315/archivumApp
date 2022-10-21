@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import REACT_APP_ENTITIES_BASE_URL from "@env";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { Form, Formik } from "formik";
@@ -71,31 +72,6 @@ const KeyParameterForm = (container: ContainerProps) => {
             validationSchema={formValidationSchema}
             onSubmit={async (values, actions) => {
               setIsButtonLoading(true);
-              // var fileExtension: string = file.uri.substring(
-              //   file.uri.lastIndexOf(".") + 1
-              // );
-              // fileExtension = fileExtension === "jpg" ? "jpeg" : fileExtension;
-
-              // //console.log(values);
-              // var bodyFormData = new FormData();
-
-              // let fileUri =
-              //   Platform.OS === "android"
-              //     ? file.uri
-              //     : file.uri.replace("file://", "");
-
-              // bodyFormData.append("File", fileUri);
-
-              // bodyFormData.append(
-              //   "file",
-              //   JSON.parse(
-              //     JSON.stringify({
-              //       uri: file.uri,
-              //       name: fileName,
-              //       type: `image/${fileExtension}`,
-              //     })
-              //   )
-              // );
 
               let asArray = Object.entries(values);
 
@@ -111,24 +87,12 @@ const KeyParameterForm = (container: ContainerProps) => {
 
               if (!userAccessToken.shouldRefresh()) {
                 let TOKEN = `Bearer ${userAccessToken.accessToken}`;
-                //console.log(headerConfig)
-                const BASE_URL = "https://dev.archivum.mblb.net/api/entities";
+
+                const BASE_URL = process.env.REACT_APP_ENTITIES_BASE_URL;
 
                 const entityLandingZoneUrl = `${BASE_URL}/landing-zone/${currContainer.name}`;
 
                 const entityUploadUrl = `${BASE_URL}/by-temp-entity-key/${currContainer.name}?${queryString}`;
-                //console.log(entityPostUrl);
-
-                // let requestConfig = {
-                //   method: "POST",
-                //   url: entityLandingZoneUrl,
-                //   body: bodyFormData,
-                //   headers: {
-                //     Authorization: TOKEN,
-                //     "X-Filename": fileName,
-                //     "Content-Type": "multipart/form-data",
-                //   },
-                // };
 
                 try {
                   const res: FileSystemUploadResult =
@@ -382,10 +346,11 @@ const KeyParameterForm = (container: ContainerProps) => {
                     style={[
                       styles.submitButton,
                       {
-                        //backgroundColor: !(isValid && dirty)? "grey": "#2e7cf2",
-                        backgroundColor: "#2e7cf2",
+                        backgroundColor: isButtonLoading ? "grey" : "#2e7cf2",
+                        //backgroundColor: "#2e7cf2",
                       },
                     ]}
+                    disabled={isButtonLoading}
                     labelStyle={{
                       fontFamily: "Muli-Bold",
                       color: "white",
