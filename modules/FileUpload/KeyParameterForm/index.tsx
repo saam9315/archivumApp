@@ -7,12 +7,11 @@ import {
   Keyboard,
   View,
   KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import REACT_APP_ENTITIES_BASE_URL from "@env";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
-import { Form, Formik } from "formik";
+import { Formik } from "formik";
 import { Container, ContainerProps, KeyParameter } from "../../../types";
 import { useRecoilValue } from "recoil";
 import { selectedFileAtom, userTokenAtom } from "../../../stores/Atoms";
@@ -179,8 +178,6 @@ const KeyParameterForm = (container: ContainerProps) => {
               values,
               setFieldValue,
               handleSubmit,
-              dirty,
-              isValid,
             }) => (
               <View
                 style={[
@@ -306,6 +303,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                       ) : (
                         <TextInput
                           style={styles.textInput}
+                          label={`${item.type}`}
                           error={
                             errors[itemName] && touched[itemName] ? true : false
                           }
@@ -325,7 +323,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                               text: colorScheme === "dark" ? "black" : "black",
                             },
                           }}
-                          placeholder={item.type}
+                          //placeholder={item.type}
                           value={values.itemName}
                         />
                       )}
