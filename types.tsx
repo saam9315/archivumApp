@@ -125,3 +125,8 @@ export interface file {
   uri: string;
   width?: number;
 }
+
+export interface KeyParameter {
+  key: string;
+  value: string[];
+}

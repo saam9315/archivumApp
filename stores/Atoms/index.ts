@@ -1,7 +1,7 @@
 import axios from "axios";
 import { atom, selector, useRecoilState } from "recoil";
 import { AuthData } from "../../contexts/Auth";
-import { Container, file } from "../../types";
+import { Container, file, KeyParameter} from "../../types";
 
 export const userTokenAtom = atom<AuthData | undefined>({
   key: "userToken",
@@ -21,6 +21,17 @@ export const shouldRefreshTokenAtom = atom({
 export const selectedFileAtom = atom<file>({
   key: "selectedFile",
 });
+
+export const tempEntityKeyAtom = atom <string>({
+  key: 'tempEntityKey',
+  default: ''
+})
+
+export const suggestedValuesAtom = atom({
+  key: 'suggestedValues',
+  default: null
+})
+
 
 export const containersAtom = atom({
   key: "containers",

@@ -1,26 +1,99 @@
-import {
-  Button,
-  StyleSheet,
-  Image,
-  View,
-  useColorScheme,
-  Pressable,
-  Text,
-} from "react-native";
+import { StyleSheet, Image, View, useColorScheme } from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { useSetRecoilState } from "recoil";
-import { selectedFileAtom } from "../../../stores/Atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  selectedFileAtom,
+  suggestedValuesAtom,
+  tempEntityKeyAtom,
+  userTokenAtom,
+} from "../../../stores/Atoms";
 import { useNavigation } from "@react-navigation/native";
-import { file } from "../../../types";
+import { Container, ContainerProps, file } from "../../../types";
+import { TokenResponse } from "expo-auth-session";
+import { FileSystemUploadResult } from "expo-file-system";
+import * as FileSystem from "expo-file-system";
+import { Button } from "react-native-paper";
+import Toast from "react-native-root-toast";
+import { useAuth } from "../../../contexts/Auth";
 
 export default function ImageComponent(container: any) {
   // The path of the picked image
   const [pickedImagePath, setPickedImagePath] = useState("");
   const setFile = useSetRecoilState<file>(selectedFileAtom);
+  const setTempEntityKey = useSetRecoilState(tempEntityKeyAtom);
+  const setSuggestedValues = useSetRecoilState(suggestedValuesAtom);
+  const userToken = useRecoilValue(userTokenAtom);
+  if (userToken) var userAccessToken = new TokenResponse(userToken);
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const currContainer = container.container;
+  const auth = useAuth();
+
+  const handleNext = async () => {
+    setIsButtonLoading(true);
+    setIsButtonDisabled(true);
+    try {
+      if (!userAccessToken.shouldRefresh()) {
+        let TOKEN = `Bearer ${userAccessToken.accessToken}`;
+        const BASE_URL = process.env.REACT_APP_ENTITIES_BASE_URL;
+        const entityLandingZoneUrl = `${BASE_URL}/landing-zone/${currContainer.name}`;
+        const res: FileSystemUploadResult = await FileSystem.uploadAsync(
+          entityLandingZoneUrl,
+          pickedImagePath,
+          {
+            fieldName: "file",
+            httpMethod: "POST",
+            headers: {
+              authorization: TOKEN,
+            },
+          }
+        );
+        if (res.status === 200) {
+          //console.log(JSON.parse(res.body).suggestedValues);
+
+          setSuggestedValues(JSON.parse(res.body).suggestedValues);
+          setTempEntityKey(JSON.stringify(JSON.parse(res.body).tempEntityKey));
+          setIsButtonLoading(false);
+          setIsButtonDisabled(false);
+          navigation.navigate("KeyParameterInputScreen", container);
+        } else {
+          Toast.show(res.body, {
+            textStyle: {
+              fontSize: 18,
+            },
+            duration: Toast.durations.LONG,
+            backgroundColor: "red",
+          });
+          setIsButtonDisabled(false);
+          setIsButtonLoading(false);
+        }
+      } else {
+        Toast.show("Unauthorised!", {
+          textStyle: {
+            fontSize: 18,
+          },
+          duration: Toast.durations.LONG,
+          backgroundColor: "red",
+        });
+        setIsButtonLoading(false);
+        setIsButtonDisabled(false);
+        auth.signOut();
+      }
+    } catch (error) {
+      Toast.show(JSON.stringify(error), {
+        textStyle: {
+          fontSize: 18,
+        },
+        duration: Toast.durations.LONG,
+        backgroundColor: "red",
+      });
+      setIsButtonLoading(false);
+      setIsButtonDisabled(false);
+    }
+  };
 
   // This function is triggered when the "Select an image" button pressed
   const showImagePicker = async () => {
@@ -78,11 +151,25 @@ export default function ImageComponent(container: any) {
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          onPress={showImagePicker}
+          uppercase={false}
           color={"#2e7ef2"}
-          title="Select an existing image"
-        />
-        <Button onPress={openCamera} color={"#2e7ef2"} title="Open camera" />
+          labelStyle={{
+            fontFamily: "Muli-Bold",
+          }}
+          onPress={showImagePicker}
+        >
+          Select an existing image
+        </Button>
+        <Button
+          uppercase={false}
+          color={"#2e7ef2"}
+          labelStyle={{
+            fontFamily: "Muli-Bold",
+          }}
+          onPress={openCamera}
+        >
+          Open camera
+        </Button>
       </View>
       <View
         style={[
@@ -90,25 +177,22 @@ export default function ImageComponent(container: any) {
           { backgroundColor: colorScheme === "dark" ? "#161f28" : "#eaecf5" },
         ]}
       >
-        <Pressable
+        <Button
           style={[
             styles.nextButton,
             { backgroundColor: isButtonDisabled ? "grey" : "#2e7cf2" },
           ]}
-          onPress={() =>
-            navigation.navigate("KeyParameterInputScreen", container)
-          }
+          labelStyle={{
+            fontFamily: "Muli-Bold",
+            color: isButtonLoading ? "lightgrey" : "white",
+          }}
+          uppercase={false}
           disabled={isButtonDisabled}
+          loading={isButtonLoading}
+          onPress={handleNext}
         >
-          <Text
-            style={[
-              styles.nextButtonText,
-              { color: isButtonDisabled ? "lightgrey" : "#fff" },
-            ]}
-          >
-            Next
-          </Text>
-        </Pressable>
+          Next
+        </Button>
       </View>
     </View>
   );

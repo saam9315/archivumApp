@@ -206,7 +206,6 @@ const AuthProvider: React.FC = ({ children }) => {
       setUserToken(undefined);
       setIsLoading(false);
     }
-    //Alert.alert("Authentication error!");
     setUserToken(undefined);
     setIsLoading(false);
   }
