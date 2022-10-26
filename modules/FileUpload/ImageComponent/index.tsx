@@ -52,8 +52,7 @@ export default function ImageComponent(container: any) {
           }
         );
         if (res.status === 200) {
-          //console.log(JSON.parse(res.body).suggestedValues);
-
+          console.log(JSON.parse(res.body));
           setSuggestedValues(JSON.parse(res.body).suggestedValues);
           setTempEntityKey(JSON.stringify(JSON.parse(res.body).tempEntityKey));
           setIsButtonLoading(false);

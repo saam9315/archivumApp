@@ -43,12 +43,12 @@ const KeyParameterForm = (container: ContainerProps) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const ofTypeString = ["enum", "keyword", "text", "date"];
 
-  console.log(suggestedValues);
+  // console.log(suggestedValues);
 
   let testObj = {
     Year: ["2022", "2021"],
   };
-  console.log(testObj["Year"][0]);
+  //console.log(testObj["Year"][0]);
 
   //let temp: string = "Department";
   // Object.entries(suggestedValues).map(([key, value]) => {
@@ -72,10 +72,6 @@ const KeyParameterForm = (container: ContainerProps) => {
         : Yup.number().required(),
     ])
   );
-
-  function timeout(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   const formValidationSchema = Yup.object().shape(validationObject);
 
