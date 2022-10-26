@@ -43,17 +43,9 @@ const KeyParameterForm = (container: ContainerProps) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const ofTypeString = ["enum", "keyword", "text", "date"];
 
-  // console.log(suggestedValues);
-
   let testObj = {
     Year: ["2022", "2021"],
   };
-  //console.log(testObj["Year"][0]);
-
-  //let temp: string = "Department";
-  // Object.entries(suggestedValues).map(([key, value]) => {
-  //   // console.log(value);
-  // });
 
   let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1);
   const navigation = useNavigation();
@@ -287,7 +279,6 @@ const KeyParameterForm = (container: ContainerProps) => {
                       ) : (
                         <TextInput
                           style={styles.textInput}
-                          //label={item.type}
                           error={
                             errors[itemName] && touched[itemName] ? true : false
                           }
@@ -308,11 +299,12 @@ const KeyParameterForm = (container: ContainerProps) => {
                             },
                           }}
                           placeholder={item.type}
-                          value={
-                            suggestedValues
-                              ? suggestedValues[itemName][0]
-                              : values.itemName
-                          }
+                          value={values.itemName}
+                          // value={
+                          //   suggestedValues
+                          //     ? suggestedValues[itemName][0]
+                          //     : values.itemName
+                          // }
                         />
                       )}
                     </View>
@@ -334,16 +326,13 @@ const KeyParameterForm = (container: ContainerProps) => {
                         backgroundColor: isButtonLoading ? "grey" : "#2e7cf2",
                       },
                     ]}
+                    uppercase={false}
                     disabled={isButtonLoading}
                     labelStyle={{
                       fontFamily: "Muli-Bold",
                       color: isButtonLoading ? "lightgrey" : "white",
                     }}
-                    onPress={
-                      /*handleSubmit*/ () => {
-                        console.log(values);
-                      }
-                    }
+                    onPress={handleSubmit}
                     loading={isButtonLoading}
                   >
                     Upload File
