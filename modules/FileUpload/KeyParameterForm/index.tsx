@@ -14,7 +14,12 @@ import { Button, TextInput } from "react-native-paper";
 import { Formik } from "formik";
 import { Container, ContainerProps, KeyParameter } from "../../../types";
 import { useRecoilValue } from "recoil";
-import { selectedFileAtom, userTokenAtom } from "../../../stores/Atoms";
+import {
+  selectedFileAtom,
+  suggestedValuesAtom,
+  tempEntityKeyAtom,
+  userTokenAtom,
+} from "../../../stores/Atoms";
 import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
 import axios, { AxiosError, AxiosResponse } from "axios";
@@ -24,8 +29,6 @@ import Separator from "../../../components/Separator";
 import { useAuth } from "../../../contexts/Auth";
 import { TokenResponse } from "expo-auth-session";
 import * as Yup from "yup";
-import * as FileSystem from "expo-file-system";
-import { FileSystemUploadResult } from "expo-file-system";
 
 const KeyParameterForm = (container: ContainerProps) => {
   const colorScheme = useColorScheme();
@@ -35,8 +38,14 @@ const KeyParameterForm = (container: ContainerProps) => {
   const file = useRecoilValue(selectedFileAtom);
   const userToken = useRecoilValue(userTokenAtom);
   if (userToken) var userAccessToken = new TokenResponse(userToken);
+  const tempEntityKey = useRecoilValue(tempEntityKeyAtom);
+  const suggestedValues = useRecoilValue(suggestedValuesAtom);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const ofTypeString = ["enum", "keyword", "text", "date"];
+
+  let testObj = {
+    Year: ["2022", "2021"],
+  };
 
   let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1);
   const navigation = useNavigation();
@@ -55,10 +64,6 @@ const KeyParameterForm = (container: ContainerProps) => {
         : Yup.number().required(),
     ])
   );
-
-  function timeout(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   const formValidationSchema = Yup.object().shape(validationObject);
 
@@ -89,72 +94,43 @@ const KeyParameterForm = (container: ContainerProps) => {
 
                 const BASE_URL = process.env.REACT_APP_ENTITIES_BASE_URL;
 
-                const entityLandingZoneUrl = `${BASE_URL}/landing-zone/${currContainer.name}`;
-
                 const entityUploadUrl = `${BASE_URL}/by-temp-entity-key/${currContainer.name}?${queryString}`;
 
                 try {
-                  const res: FileSystemUploadResult =
-                    await FileSystem.uploadAsync(
-                      entityLandingZoneUrl,
-                      file.uri,
-                      {
-                        fieldName: "file",
-                        httpMethod: "POST",
-                        headers: {
-                          authorization: TOKEN,
-                          "X-filename": fileName,
+                  axios({
+                    method: "put",
+                    data: tempEntityKey,
+                    url: entityUploadUrl,
+                    headers: {
+                      "Content-Type": "application/json",
+                      "X-filename": fileName,
+                      authorization: TOKEN,
+                    },
+                  })
+                    .then((response: AxiosResponse) => {
+                      setIsButtonLoading(false);
+                      console.log(response.data);
+                      Toast.show("File uploaded successfuly!", {
+                        textStyle: {
+                          fontSize: 18,
                         },
-                      }
-                    );
-
-                  if (res.status === 200) {
-                    await timeout(3000);
-
-                    axios({
-                      method: "put",
-                      data: JSON.stringify(JSON.parse(res.body).tempEntityKey),
-                      url: entityUploadUrl,
-                      headers: {
-                        "Content-Type": "application/json",
-                        "X-filename": fileName,
-                        authorization: TOKEN,
-                      },
-                    })
-                      .then((response: AxiosResponse) => {
-                        setIsButtonLoading(false);
-                        console.log(response.data);
-                        Toast.show("File uploaded successfuly!", {
-                          textStyle: {
-                            fontSize: 18,
-                          },
-                          duration: Toast.durations.LONG,
-                          backgroundColor: "green",
-                        });
-                        actions.resetForm();
-                        navigation.navigate("Home");
-                      })
-                      .catch((error: AxiosError) => {
-                        setIsButtonLoading(false);
-                        let errorData: any = error.response?.data;
-                        Toast.show("" + errorData.message, {
-                          textStyle: {
-                            fontSize: 18,
-                          },
-                          duration: Toast.durations.LONG,
-                          backgroundColor: "red",
-                        });
+                        duration: Toast.durations.LONG,
+                        backgroundColor: "green",
                       });
-                  } else {
-                    setIsButtonLoading(false);
-                    Toast.show(res.body, {
-                      textStyle: {
-                        fontSize: 18,
-                      },
-                      duration: Toast.durations.LONG,
-                      backgroundColor: "red",
+                      actions.resetForm();
+                      navigation.navigate("Home");
+                    })
+                    .catch((error: AxiosError) => {
+                      setIsButtonLoading(false);
+                      let errorData: any = error.response?.data;
+                      Toast.show("" + errorData.message, {
+                        textStyle: {
+                          fontSize: 18,
+                        },
+                        duration: Toast.durations.LONG,
+                        backgroundColor: "red",
+                      });
                     });
-                  }
                 } catch (error) {
                   console.log(error);
                 }
@@ -262,7 +238,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                           data={item.values}
                           defaultButtonText={`Select ${itemName}`}
                           onSelect={(selectedItem) => {
-                            setFieldValue(`${itemName}`, selectedItem);
+                            setFieldValue(itemName, selectedItem);
                           }}
                           buttonTextAfterSelection={(selectedItem) => {
                             // text represented after item is selected
@@ -303,7 +279,6 @@ const KeyParameterForm = (container: ContainerProps) => {
                       ) : (
                         <TextInput
                           style={styles.textInput}
-                          //label={item.type}
                           error={
                             errors[itemName] && touched[itemName] ? true : false
                           }
@@ -317,7 +292,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                           outlineColor="#2e7ef2"
                           activeOutlineColor="#2e7ef2"
                           activeUnderlineColor="#2e7ef2"
-                          onChangeText={handleChange(`${item.name}`)}
+                          onChangeText={handleChange(itemName)}
                           theme={{
                             colors: {
                               text: colorScheme === "dark" ? "black" : "black",
@@ -325,6 +300,11 @@ const KeyParameterForm = (container: ContainerProps) => {
                           }}
                           placeholder={item.type}
                           value={values.itemName}
+                          // value={
+                          //   suggestedValues
+                          //     ? suggestedValues[itemName][0]
+                          //     : values.itemName
+                          // }
                         />
                       )}
                     </View>
@@ -346,6 +326,7 @@ const KeyParameterForm = (container: ContainerProps) => {
                         backgroundColor: isButtonLoading ? "grey" : "#2e7cf2",
                       },
                     ]}
+                    uppercase={false}
                     disabled={isButtonLoading}
                     labelStyle={{
                       fontFamily: "Muli-Bold",
