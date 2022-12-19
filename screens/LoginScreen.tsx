@@ -48,11 +48,6 @@ export default function LoginScreen() {
         <Text style={[styles.headerText, { color: headerTextColor }]}>
           Cool down your Hot data with Archivum
         </Text>
-        {/* <Image
-          source={require('../assets/images/archivum-illustration.svg')}
-          fadeDuration={0}
-          style={styles.ilustration}
-        /> */}
 
         <LoginIllustraion></LoginIllustraion>
         <View

@@ -162,7 +162,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
     if (response?.type === "success") {
       const code = response.params.code;
-      //console.log("============================================= Code =============================================\n", code);
+      // ============================================= Auth Code =============================================
       if (code) {
         try {
           const accessTokenConfig = new AuthSession.AccessTokenRequest({

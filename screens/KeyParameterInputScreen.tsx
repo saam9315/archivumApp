@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  useColorScheme,
-} from "react-native";
+import { ScrollView, StyleSheet, useColorScheme } from "react-native";
 import Colors from "../constants/Colors";
 import KeyParameterForm from "../modules/FileUpload/KeyParameterForm";
 import { Container } from "../types";

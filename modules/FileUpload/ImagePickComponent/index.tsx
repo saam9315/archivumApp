@@ -9,7 +9,7 @@ import {
   userTokenAtom,
 } from "../../../stores/Atoms";
 import { useNavigation } from "@react-navigation/native";
-import { Container, ContainerProps, file } from "../../../types";
+import { file } from "../../../types";
 import { TokenResponse } from "expo-auth-session";
 import { FileSystemUploadResult } from "expo-file-system";
 import * as FileSystem from "expo-file-system";
@@ -17,7 +17,7 @@ import { Button } from "react-native-paper";
 import Toast from "react-native-root-toast";
 import { useAuth } from "../../../contexts/Auth";
 
-export default function ImageComponent(container: any) {
+export default function ImagePickComponent(container: any) {
   // The path of the picked image
   const [pickedImagePath, setPickedImagePath] = useState("");
   const setFile = useSetRecoilState<file>(selectedFileAtom);

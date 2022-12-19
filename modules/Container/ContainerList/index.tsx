@@ -1,10 +1,4 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  useColorScheme,
-  View,
-} from "react-native";
+import { FlatList, StyleSheet, useColorScheme, View } from "react-native";
 import React, { useState } from "react";
 import ContainerCard from "../ContainerCard";
 import { useRecoilRefresher_UNSTABLE, useRecoilValue } from "recoil";

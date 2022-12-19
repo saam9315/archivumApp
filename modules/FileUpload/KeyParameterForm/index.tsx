@@ -8,7 +8,6 @@ import {
   View,
   KeyboardAvoidingView,
 } from "react-native";
-import REACT_APP_ENTITIES_BASE_URL from "@env";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { Formik } from "formik";
@@ -16,7 +15,6 @@ import { Container, ContainerProps, KeyParameter } from "../../../types";
 import { useRecoilValue } from "recoil";
 import {
   selectedFileAtom,
-  suggestedValuesAtom,
   tempEntityKeyAtom,
   userTokenAtom,
 } from "../../../stores/Atoms";
@@ -39,13 +37,9 @@ const KeyParameterForm = (container: ContainerProps) => {
   const userToken = useRecoilValue(userTokenAtom);
   if (userToken) var userAccessToken = new TokenResponse(userToken);
   const tempEntityKey = useRecoilValue(tempEntityKeyAtom);
-  const suggestedValues = useRecoilValue(suggestedValuesAtom);
+  //const suggestedValues = useRecoilValue(suggestedValuesAtom);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const ofTypeString = ["enum", "keyword", "text", "date"];
-
-  let testObj = {
-    Year: ["2022", "2021"],
-  };
 
   let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1);
   const navigation = useNavigation();
