@@ -10,9 +10,9 @@ import {
 import { useSetRecoilState } from "recoil";
 import Colors from "../constants/Colors";
 import { useAuth } from "../contexts/Auth";
-import LoginIllustraion from "../modules/Login/LoginIllusatration";
-import LoginPageFooterIcon from "../modules/Login/LoginPageFooterIcon";
-import LoginPageHeader from "../modules/Login/LoginPageHeader";
+import LoginIllustraion from "../components/Login/LoginIllusatration";
+import LoginPageFooterIcon from "../components/Login/LoginPageFooterIcon";
+import LoginPageHeader from "../components/Login/LoginPageHeader";
 import { isLoadingAtom } from "../stores/Atoms";
 
 export default function LoginScreen() {

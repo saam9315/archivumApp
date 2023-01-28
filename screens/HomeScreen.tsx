@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, useColorScheme } from "react-native";
-import ContainerList from "../modules/Container/ContainerList";
+import ContainerList from "../components/Container/ContainerList";
 
 export default function HomeScreen() {
   const themeMode = useColorScheme();

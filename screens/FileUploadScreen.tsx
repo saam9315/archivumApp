@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import Separator from "../components/Separator";
 import Colors from "../constants/Colors";
-import ImagePickComponent from "../modules/FileUpload/ImagePickComponent";
+import ImageComponent from "../modules/FileUpload/ImageComponent";
 import { Container } from "../types";
 
 export default function FileUploadScreen({ route }: any) {

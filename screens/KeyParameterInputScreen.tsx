@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet, useColorScheme } from "react-native";
 import Colors from "../constants/Colors";
-import KeyParameterForm from "../modules/FileUpload/KeyParameterForm";
+import KeyParameterForm from "../components/FileUpload/KeyParameterForm";
 import { Container } from "../types";
 
 export default function KeyParameterInputScreen({ route }: any) {

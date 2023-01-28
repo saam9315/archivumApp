@@ -30,6 +30,8 @@ import * as Yup from "yup";
 
 const KeyParameterForm = (container: ContainerProps) => {
   const colorScheme = useColorScheme();
+  const navigation = useNavigation();
+  let auth = useAuth();
   const currContainer: Container = container.container;
   const containerParameters: Array<KeyParameter> | any =
     currContainer.requiredParameters;
@@ -42,8 +44,6 @@ const KeyParameterForm = (container: ContainerProps) => {
   const ofTypeString = ["enum", "keyword", "text", "date"];
 
   let fileName = file.uri.substring(file.uri.lastIndexOf("/") + 1);
-  const navigation = useNavigation();
-  let auth = useAuth();
 
   let initialFormValues = Object.fromEntries(
     containerParameters.map((item: KeyParameter) => [item.name, ""])

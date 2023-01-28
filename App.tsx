@@ -8,7 +8,7 @@ import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import { Router } from "./routes/Router";
 import { RootSiblingParent } from "react-native-root-siblings";
-import SearchBar from "./modules/Container/SearchBar";
+import SearchBar from "./components/Container/SearchBar";
 import { View } from "react-native";
 
 export default function App() {

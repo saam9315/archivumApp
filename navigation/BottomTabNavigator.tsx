@@ -9,6 +9,7 @@ import React from "react";
 import { useColorScheme, Image, Pressable, StyleSheet } from "react-native";
 import Colors from "../constants/Colors";
 import { useAuth } from "../contexts/Auth";
+import EntitiesTableScreen from "../screens/EntitiesTableScreen";
 import Groups from "../screens/Groups";
 import HomeScreen from "../screens/HomeScreen";
 import SearchScreen from "../screens/SearchScreen";
